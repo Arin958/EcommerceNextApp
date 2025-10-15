@@ -27,13 +27,13 @@ const AdvancedSearchBar = () => {
   }, [searchParams]);
 
   // Debounce function
-  const debounce = (func: (...args: any) => void, delay: number) => {
-    let timer: NodeJS.Timeout;
-    return (...args: any) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => func(...args), delay);
-    };
+const debounce = (func: (value: string) => void, delay: number) => {
+  let timer: NodeJS.Timeout;
+  return (value: string) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(value), delay);
   };
+};
 
   // Fetch suggestions
   const fetchSuggestions = useCallback(

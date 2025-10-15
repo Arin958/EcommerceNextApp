@@ -17,7 +17,7 @@ import { User } from '@/types'
 import CartSlider from './CartSlider'
 import CartLength from './CartLength'
 
-const Header = ({ adminUser }: any) => {
+const Header = ({ adminUser }: { adminUser: User | null }) => {
     const { user, isSignedIn } = useUser()
     const router = useRouter()
     const [isMenuOpen, setIsMenuOpen] = useState(false)

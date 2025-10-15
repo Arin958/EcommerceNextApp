@@ -1,5 +1,8 @@
 import { Cart, Order } from "@/schema/schema";
 import { auth } from "@clerk/nextjs/server";
+import { AnyAaaaRecord } from "node:dns";
+
+
 
 export async function POST(req: Request) {
     try {
@@ -35,8 +38,13 @@ export async function POST(req: Request) {
 
         return new Response(JSON.stringify({ success: true, order }), { status: 201 })
 
-    } catch (error: any) {
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 })
+    } catch (error: unknown) {
+  let message = "Something went wrong";
 
-    }
+  if (error instanceof Error) {
+    message = error.message;
+  }
+
+  return new Response(JSON.stringify({ error: message }), { status: 500 });
+}
 }

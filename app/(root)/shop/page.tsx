@@ -4,6 +4,7 @@ import AdvancedSearchBar from "@/components/SearchBar";
 import SortDropdown from "@/components/SortBy";
 import { Product } from "@/schema/schema";
 import { IProduct } from "@/types";
+import { FilterQuery } from "mongoose";
 
 interface ShopPageProps {
     searchParams: Promise<{
@@ -24,8 +25,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     // ✅ Await searchParams
     const params = await searchParams;
 
-
-    const query: any = {};
+const query: FilterQuery<IProduct> = {};
 
     if (params.category) query.category = params.category;
     if (params.color) query['variants.color'] = params.color;

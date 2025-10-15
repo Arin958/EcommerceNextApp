@@ -6,6 +6,15 @@ import { getGuestId } from "@/utils/getGuestId";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
+interface UserPayload {
+  productId: string;
+  quantity: number;
+}
+
+interface GuestPayload extends UserPayload {
+  guestId: string;
+}
+
 interface CartItem {
     id?: string;
     productId?: string;
@@ -143,16 +152,16 @@ const CartSlider = ({ isOpen, onClose, items = [] }: CartSliderProps) => {
             )
         );
 
-        const payload: any = { productId, quantity: newQuantity };
-        if (!isSignedIn) {
-            let guestId = localStorage.getItem("guest_id");
-            if (!guestId) {
-                guestId = crypto.randomUUID();
-                localStorage.setItem("guest_id", guestId);
-            }
-            payload.guestId = guestId;
-        }
-
+        const payload: UserPayload | GuestPayload = { productId, quantity: newQuantity };
+       if (!isSignedIn) {
+  let guestId = localStorage.getItem("guest_id");
+  if (!guestId) {
+    guestId = crypto.randomUUID();
+    localStorage.setItem("guest_id", guestId);
+  }
+  // TypeScript knows payload can be extended
+  (payload as GuestPayload).guestId = guestId;
+}
         try {
             const res = await fetch("/api/cart/update-quantity", {
                 method: "POST",
