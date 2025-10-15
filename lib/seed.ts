@@ -1,4 +1,4 @@
-import configEnv from "./config";
+
 import { Product } from "@/schema/schema";
 import mongoose from "mongoose";
 import dummyProducts from "../dummyData.json"
@@ -13,7 +13,7 @@ const seed = async () => {
     try {
         console.log("Deleting existing products...");
         const insertProducts = await Product.deleteMany({})
-        console.log("✅ Products Deleted");
+        console.log("✅ Products Deleted", insertProducts);
         await Product.insertMany(dummyProducts.products)
 
         console.log("✅ Products Seeded");

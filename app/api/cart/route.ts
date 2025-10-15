@@ -1,14 +1,34 @@
 // /app/api/cart/add/route.ts
 import { auth } from "@clerk/nextjs/server";
-
 import { Cart } from "@/schema/schema";
 
-;
+interface CartItem {
+  productId: string;
+  name: string;
+  price: number;
+  image?: string;
+  quantity: number;
+  size?: string;
+  color?: string;
+}
+
+interface AddToCartRequest {
+  productId: string;
+  name: string;
+  price: number;
+  image?: string;
+  quantity?: number;
+  size?: string;
+  color?: string;
+  guestId?: string;
+}
 
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
-    const { productId, name, price, image, quantity = 1, size, color, guestId } = await req.json();
+    const body: AddToCartRequest = await req.json();
+
+    const { productId, name, price, image, quantity = 1, size, color, guestId } = body;
 
     if (!productId || !name || !price) {
       return new Response(JSON.stringify({ error: "Missing required product data" }), {
@@ -16,60 +36,62 @@ export async function POST(req: Request) {
       });
     }
 
-    // Identify user as guest OR logged-in
-    const identifier = userId ? { clerkId: userId } : { guestId };
+    // Identify user as guest or logged-in
+    const identifier: { clerkId?: string; guestId?: string } = userId
+      ? { clerkId: userId }
+      : guestId
+      ? { guestId }
+      : {};
+
+    if (!identifier.clerkId && !identifier.guestId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
 
     let cart = await Cart.findOne(identifier);
 
+    const newItem: CartItem = { productId, name, price, image, quantity, size, color };
+
     if (!cart) {
-      cart = await Cart.create({
-        ...identifier,
-        items: [{ productId, name, price, image, quantity, size, color }],
-      });
+      cart = await Cart.create({ ...identifier, items: [newItem] });
     } else {
-      const existingItemIndex = cart.items.findIndex(i => i.productId === productId);
+      const existingItemIndex = cart.items.findIndex(
+        (i: CartItem) => i.productId === productId
+      );
+
       if (existingItemIndex > -1) {
         cart.items[existingItemIndex].quantity += quantity;
       } else {
-        cart.items.push({ productId, name, price, image, quantity, size, color });
+        cart.items.push(newItem);
       }
+
       await cart.save();
     }
 
     return new Response(JSON.stringify({ cart }), { status: 200 });
-  } catch (err: any) {
-    console.log(err);
-    return new Response(JSON.stringify({ error: err.message || "Server error" }), { status: 500 });
+  } catch (err: unknown) {
+    let message = "Something went wrong";
+    if (err instanceof Error) message = err.message;
+    return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
 }
 
-
 export async function GET(req: Request) {
   const { userId } = await auth();
-  const { searchParams } = new URL(req.url);
-  const guestId = searchParams.get("guestId");
+  const url = new URL(req.url);
+  const guestId = url.searchParams.get("guestId");
 
-  // If user is authenticated, only use their clerkId
+  let cart;
   if (userId) {
-    const cart = await Cart.findOne({ clerkId: userId });
-    return new Response(JSON.stringify({ cart: cart?.items || [] }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    cart = await Cart.findOne({ clerkId: userId });
+  } else if (guestId) {
+    cart = await Cart.findOne({ guestId });
   }
 
-  // If no user but has guestId, use guest cart
-  if (guestId) {
-    const cart = await Cart.findOne({ guestId });
-    return new Response(JSON.stringify({ cart: cart?.items || [] }), {
+  return new Response(
+    JSON.stringify({ cart: cart?.items || [] }),
+    {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  // No user and no guestId - return empty cart
-  return new Response(JSON.stringify({ cart: [] }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+    }
+  );
 }

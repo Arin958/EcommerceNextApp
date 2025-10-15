@@ -9,9 +9,9 @@ import Header from '@/components/Header';
 import MergeCartOnLogin from '@/components/MergeCart';
 import connectDB from '@/lib/mongodb';
 import { User } from '@/schema/schema';
-import { getGuestId } from '@/utils/getGuestId';
+
 import { auth } from '@clerk/nextjs/server';
-import { after } from 'next/server'
+
 import React from 'react'
 
 const layout = async ({ children }: { children: React.ReactNode }) => {

@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Truck, Shield, Star, Clock, Heart, Award, CheckCircle } from "lucide-react";
-import Image from "next/image";
+import { Truck, Shield, Star, Heart, CheckCircle } from "lucide-react";
+
 
 const features = [
   {

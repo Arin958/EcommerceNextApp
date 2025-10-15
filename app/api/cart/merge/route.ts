@@ -1,5 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { Cart } from "@/schema/schema";
+import { ICartItem } from "@/types";
+
+
 
 export async function POST(req: Request) {
   const { userId } = await auth();
@@ -27,14 +30,17 @@ export async function POST(req: Request) {
   }
 
   // 4️⃣ Merge guest items into user cart
-  guestCart.items.forEach((guestItem) => {
-    const existingIndex = userCart.items.findIndex(i => i.productId === guestItem.productId);
-    if (existingIndex > -1) {
-      userCart.items[existingIndex].quantity += guestItem.quantity;
-    } else {
-      userCart.items.push(guestItem);
-    }
-  });
+guestCart.items.forEach((guestItem: ICartItem) => {
+  const existingIndex = userCart.items.findIndex(
+    (i: ICartItem) => i.productId === guestItem.productId
+  );
+
+  if (existingIndex > -1) {
+    userCart.items[existingIndex].quantity += guestItem.quantity;
+  } else {
+    userCart.items.push(guestItem);
+  }
+});
 
   await userCart.save();
 

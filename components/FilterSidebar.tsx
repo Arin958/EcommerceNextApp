@@ -14,8 +14,6 @@ interface FilterSidebarProps {
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({ 
     categories, 
-    colors, 
-    sizes, 
     collections, 
     maxPriceValue = 1000 
 }) => {
@@ -41,18 +39,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         router.push(`/shop?${params.toString()}`);
     };
 
-    const applyPriceFilter = () => {
-        const params = new URLSearchParams(searchParams.toString());
-
-        searchParams.forEach((val, k) => {
-            if (!params.has(k)) params.set(k, val);
-        });
-
-        params.set('minPrice', minPrice.toString());
-        params.set('maxPrice', maxPrice.toString());
-
-        router.push(`/shop?${params.toString()}`);
-    };
 
     useEffect(() => {
         if (searchParams.get('minPrice')) setMinPrice(Number(searchParams.get('minPrice')));

@@ -32,7 +32,7 @@ interface CartSliderProps {
     items?: CartItem[];
 }
 
-const CartSlider = ({ isOpen, onClose, items = [] }: CartSliderProps) => {
+const CartSlider = ({ isOpen, onClose }: CartSliderProps) => {
     const { isSignedIn } = useUser();
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);

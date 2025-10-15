@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Heart, Eye, Zap, Shield, Truck, Check } from "lucide-react";
+import { Star, Heart, Eye, Zap, Shield, Truck } from "lucide-react";
 import { IProduct } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import AddToCartButton from "./AddToCart";
+
 
 interface Props {
   product: IProduct;
@@ -19,19 +19,17 @@ const ProductCard: React.FC<Props> = ({ product }) => {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
 
   if (!product) return null;
 
   const imageUrl = product.images?.[currentImageIndex] || product.thumbnail || "/fallback.jpg";
-  const hasDiscount = product.discountPrice && product.discountPrice < product.price;
-  const discountPercentage = hasDiscount
-    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
-    : 0;
+const hasDiscount = product.discountPrice !== undefined && product.discountPrice < product.price;
+const discountPercentage = hasDiscount
+  ? Math.round(((product.price - (product.discountPrice ?? 0)) / product.price) * 100)
+  : 0;
 
-  const isNew = Date.now() - new Date(product.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000; // 7 days
-  const isBestSeller = product.sold > 50;
+
   const isLowStock = product.stock < 20;
 
   return (
@@ -195,7 +193,7 @@ const [selectedColor, setSelectedColor] = useState<string | null>(null);
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-600">Colors:</span>
               <div className="flex gap-1">
-                {product.variants.slice(0, 3).map((variant, index) => (
+                {product.variants.slice(0, 3).map((variant) => (
                   <Tooltip key={variant._id}>
                     <TooltipTrigger asChild>
                       <div

@@ -5,13 +5,8 @@ import { Toaster } from "sonner"
 
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
+
 } from '@clerk/nextjs'
-import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

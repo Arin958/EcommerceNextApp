@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 interface Suggestion {
   name?: string;
@@ -16,30 +16,24 @@ interface Suggestion {
 const AdvancedSearchBar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  let debounceTimer: NodeJS.Timeout;
 
   // Sync input with URL
   useEffect(() => {
     setSearchValue(searchParams.get("search") || "");
   }, [searchParams]);
 
-  // Debounce function
-const debounce = (func: (value: string) => void, delay: number) => {
-  let timer: NodeJS.Timeout;
-  return (value: string) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => func(value), delay);
-  };
-};
-
-  // Fetch suggestions
-  const fetchSuggestions = useCallback(
-    debounce(async (value: string) => {
+  // Debounce function (NO useCallback needed)
+  const fetchSuggestions = async (value: string) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
       if (!value) {
         setSuggestions([]);
+        setShowDropdown(false);
         return;
       }
 
@@ -47,9 +41,8 @@ const debounce = (func: (value: string) => void, delay: number) => {
       const data = await res.json();
       setSuggestions(data);
       setShowDropdown(true);
-    }, 400),
-    []
-  );
+    }, 400);
+  };
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,13 +50,17 @@ const debounce = (func: (value: string) => void, delay: number) => {
     setSearchValue(value);
     fetchSuggestions(value);
 
-    // Real-time URL update
+    // Update URL in real-time
     const params = new URLSearchParams(searchParams.toString());
-    value ? params.set("search", value) : params.delete("search");
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
     router.push(`/shop?${params.toString()}`);
   };
 
-  // Handle click suggestion
+  // Handle suggestion click
   const applySuggestion = (text: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("search", text);
@@ -88,7 +85,10 @@ const debounce = (func: (value: string) => void, delay: number) => {
               className="p-2 cursor-pointer hover:bg-gray-100"
               onClick={() => applySuggestion(item.name || item.brand || "")}
             >
-              {item.name || item.brand || item.collections || item.variants?.color}
+              {item.name ||
+                item.brand ||
+                item.collections ||
+                item.variants?.color}
             </div>
           ))}
         </div>

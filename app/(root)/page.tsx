@@ -1,28 +1,21 @@
 import AboutSection from "@/components/AboutSection";
 import CategorySection from "@/components/CategoryList";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import Hero from "@/components/HeroSection";
-import ProductCard from "@/components/ProductCard";
 import ProductDetail from "@/components/ProductDetails";
 import ProductList from "@/components/ProductList";
 import PromoTicker from "@/components/Promo";
 import ReviewSection from "@/components/ReviewSection";
-import connectDB from "@/lib/mongodb";
-import { Product, User } from "@/schema/schema";
+import { Product } from "@/schema/schema";
 import { IProduct } from "@/types";
-import { auth } from "@clerk/nextjs/server";
-import Image from "next/image";
+
+
 
 export default async function Home() {
 
-  const { userId } = await auth();
 
 
-  const dbUser = await User.findOne({ clerkId: userId });
 
 
-  const adminUser = dbUser ? JSON.parse(JSON.stringify(dbUser)) : null;
 
 
   // const product = {

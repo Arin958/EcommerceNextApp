@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 interface CategoryCardProps {
   name: string;
@@ -63,7 +63,7 @@ export const CategoriesGrid: React.FC<CategoriesGridProps> = ({ categories }) =>
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-        {categories.map((category, index) => (
+        {categories.map((category) => (
           <CategoryCard
             key={category.name}
             name={category.name}
