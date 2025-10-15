@@ -1,0 +1,482 @@
+{
+  "products": [
+    {
+      "name": "Premium Wireless Headphones",
+      "slug": "premium-wireless-headphones",
+      "description": "Experience crystal-clear sound with our premium wireless headphones featuring active noise cancellation, 30-hour battery life, and superior comfort for all-day wear.",
+      "sku": "WH-2024-001",
+      "brand": "SoundWave",
+      "category": "electronics",
+      "images": [
+        "https://picsum.photos/seed/headphones1/800/800",
+        "https://picsum.photos/seed/headphones2/800/800",
+        "https://picsum.photos/seed/headphones3/800/800",
+        "https://picsum.photos/seed/headphones4/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/headphones1/400/400",
+      "price": 299.99,
+      "discountPrice": 249.99,
+      "stock": 150,
+      "sold": 87,
+      "variants": [
+        {
+          "color": "Black",
+          "size": "Standard",
+          "stock": 75
+        },
+        {
+          "color": "White",
+          "size": "Standard",
+          "stock": 50
+        },
+        {
+          "color": "Silver",
+          "size": "Standard",
+          "stock": 25
+        }
+      ],
+      "tags": ["wireless", "audio", "noise-cancelling", "premium"],
+      "collections": ["electronics", "featured", "bestsellers"],
+      "averageRating": 4.7,
+      "totalReviews": 234,
+      "isFeatured": true,
+      "isPublished": true,
+      "metaTitle": "Premium Wireless Headphones - Active Noise Cancellation | SoundWave",
+      "metaDescription": "Shop premium wireless headphones with 30-hour battery life and active noise cancellation. Free shipping on orders over $50."
+    },
+    {
+      "name": "Minimalist Leather Backpack",
+      "slug": "minimalist-leather-backpack",
+      "description": "Handcrafted genuine leather backpack with laptop compartment, multiple pockets, and timeless design. Perfect for work, travel, or everyday use.",
+      "sku": "BAG-2024-002",
+      "brand": "UrbanCarry",
+      "category": "bags",
+      "images": [
+        "https://picsum.photos/seed/backpack1/800/800",
+        "https://picsum.photos/seed/backpack2/800/800",
+        "https://picsum.photos/seed/backpack3/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/backpack1/400/400",
+      "price": 189.99,
+      "discountPrice": null,
+      "stock": 85,
+      "sold": 42,
+      "variants": [
+        {
+          "color": "Brown",
+          "size": "One Size",
+          "stock": 45
+        },
+        {
+          "color": "Black",
+          "size": "One Size",
+          "stock": 40
+        }
+      ],
+      "tags": ["leather", "backpack", "laptop", "handcrafted"],
+      "collections": ["bags", "work-essentials"],
+      "averageRating": 4.8,
+      "totalReviews": 156,
+      "isFeatured": true,
+      "isPublished": true,
+      "metaTitle": "Minimalist Leather Backpack - Handcrafted Premium Quality",
+      "metaDescription": "Genuine leather backpack with laptop compartment. Handcrafted design perfect for professionals and travelers."
+    },
+    {
+      "name": "Smart Fitness Watch Pro",
+      "slug": "smart-fitness-watch-pro",
+      "description": "Track your fitness goals with precision using this advanced smartwatch. Features heart rate monitoring, GPS, sleep tracking, and 50+ sport modes.",
+      "sku": "WATCH-2024-003",
+      "brand": "FitTech",
+      "category": "watches",
+      "images": [
+        "https://picsum.photos/seed/smartwatch1/800/800",
+        "https://picsum.photos/seed/smartwatch2/800/800",
+        "https://picsum.photos/seed/smartwatch3/800/800",
+        "https://picsum.photos/seed/smartwatch4/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/smartwatch1/400/400",
+      "price": 349.99,
+      "discountPrice": 299.99,
+      "stock": 200,
+      "sold": 145,
+      "variants": [
+        {
+          "color": "Black",
+          "size": "42mm",
+          "stock": 80
+        },
+        {
+          "color": "Black",
+          "size": "46mm",
+          "stock": 60
+        },
+        {
+          "color": "Silver",
+          "size": "42mm",
+          "stock": 40
+        },
+        {
+          "color": "Silver",
+          "size": "46mm",
+          "stock": 20
+        }
+      ],
+      "tags": ["smartwatch", "fitness", "health", "gps"],
+      "collections": ["electronics", "fitness", "bestsellers"],
+      "averageRating": 4.6,
+      "totalReviews": 412,
+      "isFeatured": true,
+      "isPublished": true,
+      "metaTitle": "Smart Fitness Watch Pro - Track Your Health & Fitness Goals",
+      "metaDescription": "Advanced fitness smartwatch with heart rate monitoring, GPS, and 50+ sport modes. Perfect companion for your active lifestyle."
+    },
+    {
+      "name": "Organic Cotton T-Shirt",
+      "slug": "organic-cotton-t-shirt",
+      "description": "Super soft organic cotton t-shirt with a relaxed fit. Sustainable, comfortable, and perfect for everyday wear. Made from 100% certified organic cotton.",
+      "sku": "SHIRT-2024-004",
+      "brand": "EcoWear",
+      "category": "clothing",
+      "images": [
+        "https://picsum.photos/seed/tshirt1/800/800",
+        "https://picsum.photos/seed/tshirt2/800/800",
+        "https://picsum.photos/seed/tshirt3/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/tshirt1/400/400",
+      "price": 34.99,
+      "discountPrice": 24.99,
+      "stock": 500,
+      "sold": 312,
+      "variants": [
+        {
+          "color": "White",
+          "size": "S",
+          "stock": 50
+        },
+        {
+          "color": "White",
+          "size": "M",
+          "stock": 80
+        },
+        {
+          "color": "White",
+          "size": "L",
+          "stock": 70
+        },
+        {
+          "color": "Black",
+          "size": "S",
+          "stock": 60
+        },
+        {
+          "color": "Black",
+          "size": "M",
+          "stock": 100
+        },
+        {
+          "color": "Black",
+          "size": "L",
+          "stock": 90
+        },
+        {
+          "color": "Navy",
+          "size": "M",
+          "stock": 50
+        }
+      ],
+      "tags": ["organic", "cotton", "sustainable", "basic"],
+      "collections": ["clothing", "eco-friendly", "bestsellers"],
+      "averageRating": 4.9,
+      "totalReviews": 589,
+      "isFeatured": false,
+      "isPublished": true,
+      "metaTitle": "Organic Cotton T-Shirt - Sustainable & Comfortable",
+      "metaDescription": "100% organic cotton t-shirt. Soft, sustainable, and perfect for everyday wear. Available in multiple colors and sizes."
+    },
+    {
+      "name": "Professional Camera Lens 50mm",
+      "slug": "professional-camera-lens-50mm",
+      "description": "Professional grade 50mm f/1.8 lens with exceptional sharpness and beautiful bokeh. Perfect for portraits, street photography, and low-light shooting.",
+      "sku": "LENS-2024-005",
+      "brand": "ProOptics",
+      "category": "electronics",
+      "images": [
+        "https://picsum.photos/seed/lens1/800/800",
+        "https://picsum.photos/seed/lens2/800/800",
+        "https://picsum.photos/seed/lens3/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/lens1/400/400",
+      "price": 549.99,
+      "discountPrice": null,
+      "stock": 45,
+      "sold": 28,
+      "variants": [
+        {
+          "color": "Black",
+          "size": "Canon Mount",
+          "stock": 15
+        },
+        {
+          "color": "Black",
+          "size": "Nikon Mount",
+          "stock": 15
+        },
+        {
+          "color": "Black",
+          "size": "Sony E-Mount",
+          "stock": 15
+        }
+      ],
+      "tags": ["camera", "lens", "photography", "professional"],
+      "collections": ["electronics", "photography"],
+      "averageRating": 4.9,
+      "totalReviews": 78,
+      "isFeatured": false,
+      "isPublished": true,
+      "metaTitle": "Professional 50mm Camera Lens f/1.8 - ProOptics",
+      "metaDescription": "High-quality 50mm camera lens perfect for portraits and low-light photography. Available for Canon, Nikon, and Sony mounts."
+    },
+    {
+      "name": "Ceramic Coffee Mug Set",
+      "slug": "ceramic-coffee-mug-set",
+      "description": "Set of 4 handmade ceramic coffee mugs with unique glazed finish. Microwave and dishwasher safe. Each mug holds 12oz and features a comfortable handle.",
+      "sku": "MUG-2024-006",
+      "brand": "ArtisanHome",
+      "category": "home",
+      "images": [
+        "https://picsum.photos/seed/mug1/800/800",
+        "https://picsum.photos/seed/mug2/800/800",
+        "https://picsum.photos/seed/mug3/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/mug1/400/400",
+      "price": 49.99,
+      "discountPrice": 39.99,
+      "stock": 120,
+      "sold": 67,
+      "variants": [
+        {
+          "color": "Blue",
+          "size": "12oz",
+          "stock": 40
+        },
+        {
+          "color": "Green",
+          "size": "12oz",
+          "stock": 40
+        },
+        {
+          "color": "Mixed",
+          "size": "12oz",
+          "stock": 40
+        }
+      ],
+      "tags": ["ceramic", "handmade", "coffee", "kitchen"],
+      "collections": ["home", "kitchenware"],
+      "averageRating": 4.7,
+      "totalReviews": 143,
+      "isFeatured": false,
+      "isPublished": true,
+      "metaTitle": "Handmade Ceramic Coffee Mug Set - 4 Pieces",
+      "metaDescription": "Beautiful handmade ceramic coffee mugs set. Dishwasher safe and perfect for your morning coffee or tea."
+    },
+    {
+      "name": "Yoga Mat Premium Non-Slip",
+      "slug": "yoga-mat-premium-non-slip",
+      "description": "Extra thick 6mm yoga mat with superior grip and cushioning. Made from eco-friendly TPE material, includes carrying strap. Perfect for yoga, pilates, and floor exercises.",
+      "sku": "YOGA-2024-007",
+      "brand": "ZenFit",
+      "category": "fitness",
+      "images": [
+        "https://picsum.photos/seed/yogamat1/800/800",
+        "https://picsum.photos/seed/yogamat2/800/800",
+        "https://picsum.photos/seed/yogamat3/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/yogamat1/400/400",
+      "price": 59.99,
+      "discountPrice": 44.99,
+      "stock": 180,
+      "sold": 95,
+      "variants": [
+        {
+          "color": "Purple",
+          "size": "6mm",
+          "stock": 60
+        },
+        {
+          "color": "Blue",
+          "size": "6mm",
+          "stock": 60
+        },
+        {
+          "color": "Pink",
+          "size": "6mm",
+          "stock": 60
+        }
+      ],
+      "tags": ["yoga", "fitness", "exercise", "eco-friendly"],
+      "collections": ["fitness", "eco-friendly"],
+      "averageRating": 4.8,
+      "totalReviews": 267,
+      "isFeatured": true,
+      "isPublished": true,
+      "metaTitle": "Premium Non-Slip Yoga Mat - 6mm Thick | ZenFit",
+      "metaDescription": "Eco-friendly yoga mat with superior grip and cushioning. Perfect for yoga, pilates, and all floor exercises."
+    },
+    {
+      "name": "Stainless Steel Water Bottle",
+      "slug": "stainless-steel-water-bottle",
+      "description": "Double-walled vacuum insulated water bottle keeps drinks cold for 24 hours or hot for 12 hours. BPA-free, leak-proof lid, and durable construction.",
+      "sku": "BOTTLE-2024-008",
+      "brand": "HydroFlow",
+      "category": "home",
+      "images": [
+        "https://picsum.photos/seed/bottle1/800/800",
+        "https://picsum.photos/seed/bottle2/800/800",
+        "https://picsum.photos/seed/bottle3/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/bottle1/400/400",
+      "price": 29.99,
+      "discountPrice": null,
+      "stock": 300,
+      "sold": 201,
+      "variants": [
+        {
+          "color": "Black",
+          "size": "32oz",
+          "stock": 100
+        },
+        {
+          "color": "White",
+          "size": "32oz",
+          "stock": 80
+        },
+        {
+          "color": "Blue",
+          "size": "32oz",
+          "stock": 60
+        },
+        {
+          "color": "Black",
+          "size": "40oz",
+          "stock": 60
+        }
+      ],
+      "tags": ["water bottle", "insulated", "stainless steel", "eco-friendly"],
+      "collections": ["fitness", "eco-friendly", "bestsellers"],
+      "averageRating": 4.6,
+      "totalReviews": 445,
+      "isFeatured": false,
+      "isPublished": true,
+      "metaTitle": "Insulated Stainless Steel Water Bottle - 24hr Cold",
+      "metaDescription": "Double-walled vacuum insulated water bottle. Keeps drinks cold for 24 hours. BPA-free and leak-proof."
+    },
+    {
+      "name": "Wireless Charging Pad",
+      "slug": "wireless-charging-pad",
+      "description": "Fast wireless charging pad compatible with all Qi-enabled devices. Sleek aluminum design with LED indicator and overheat protection. Includes USB-C cable.",
+      "sku": "CHARGE-2024-009",
+      "brand": "PowerHub",
+      "category": "electronics",
+      "images": [
+        "https://picsum.photos/seed/charger1/800/800",
+        "https://picsum.photos/seed/charger2/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/charger1/400/400",
+      "price": 39.99,
+      "discountPrice": 29.99,
+      "stock": 250,
+      "sold": 178,
+      "variants": [
+        {
+          "color": "Black",
+          "size": "Standard",
+          "stock": 125
+        },
+        {
+          "color": "White",
+          "size": "Standard",
+          "stock": 125
+        }
+      ],
+      "tags": ["wireless", "charging", "tech", "accessories"],
+      "collections": ["electronics", "accessories"],
+      "averageRating": 4.5,
+      "totalReviews": 312,
+      "isFeatured": false,
+      "isPublished": true,
+      "metaTitle": "Fast Wireless Charging Pad - Qi Compatible",
+      "metaDescription": "Universal wireless charging pad for all Qi-enabled devices. Fast charging with safety features and sleek design."
+    },
+    {
+      "name": "Designer Sunglasses Polarized",
+      "slug": "designer-sunglasses-polarized",
+      "description": "Premium polarized sunglasses with UV400 protection and lightweight titanium frame. Includes protective case and cleaning cloth. Perfect blend of style and function.",
+      "sku": "GLASS-2024-010",
+      "brand": "LuxVision",
+      "category": "fashion",
+      "images": [
+        "https://picsum.photos/seed/sunglasses1/800/800",
+        "https://picsum.photos/seed/sunglasses2/800/800",
+        "https://picsum.photos/seed/sunglasses3/800/800",
+        "https://picsum.photos/seed/sunglasses4/800/800"
+      ],
+      "thumbnail": "https://picsum.photos/seed/sunglasses1/400/400",
+      "price": 159.99,
+      "discountPrice": 129.99,
+      "stock": 95,
+      "sold": 53,
+      "variants": [
+        {
+          "color": "Black",
+          "size": "Medium",
+          "stock": 35
+        },
+        {
+          "color": "Tortoise",
+          "size": "Medium",
+          "stock": 30
+        },
+        {
+          "color": "Silver",
+          "size": "Medium",
+          "stock": 30
+        }
+      ],
+      "tags": ["sunglasses", "polarized", "designer", "uv-protection"],
+      "collections": ["accessories", "summer"],
+      "averageRating": 4.7,
+      "totalReviews": 189,
+      "isFeatured": true,
+      "isPublished": true,
+      "metaTitle": "Designer Polarized Sunglasses - UV400 Protection",
+      "metaDescription": "Premium polarized sunglasses with titanium frame and UV400 protection. Stylish design meets superior eye protection."
+    }
+  ],
+  "categories": [
+    {
+      "_id": "6501234567890abcdef12345",
+      "name": "Electronics"
+    },
+    {
+      "_id": "6501234567890abcdef12346",
+      "name": "Bags & Luggage"
+    },
+    {
+      "_id": "6501234567890abcdef12347",
+      "name": "Clothing"
+    },
+    {
+      "_id": "6501234567890abcdef12348",
+      "name": "Home & Kitchen"
+    },
+    {
+      "_id": "6501234567890abcdef12349",
+      "name": "Sports & Fitness"
+    },
+    {
+      "_id": "6501234567890abcdef12350",
+      "name": "Accessories"
+    }
+  ]
+}
