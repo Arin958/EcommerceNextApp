@@ -1,6 +1,7 @@
 // /app/api/cart/add/route.ts
 import { auth } from "@clerk/nextjs/server";
 import { Cart } from "@/schema/schema";
+import connectDB from "@/lib/mongodb";
 
 interface CartItem {
   productId: string;
@@ -24,6 +25,7 @@ interface AddToCartRequest {
 }
 
 export async function POST(req: Request) {
+  await connectDB()
   try {
     const { userId } = await auth();
     const body: AddToCartRequest = await req.json();
@@ -76,6 +78,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  await connectDB()
   const { userId } = await auth();
   const url = new URL(req.url);
   const guestId = url.searchParams.get("guestId");

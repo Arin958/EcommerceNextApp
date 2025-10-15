@@ -1,10 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
 import { Cart } from "@/schema/schema";
 import { ICartItem } from "@/types";
+import connectDB from "@/lib/mongodb";
 
 
 
 export async function POST(req: Request) {
+  await connectDB()
   const { userId } = await auth();
   const { guestId } = await req.json();
 
