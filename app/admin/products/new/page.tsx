@@ -19,15 +19,82 @@ import {
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { VariantsManager, Variant } from "@/components/admin/VariantsManager";
+import { compressMultipleImages, getFileSizeMB } from "@/utils/imageCompression";
 
 const AddProductPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [compressing, setCompressing] = useState(false);
+
   const [images, setImages] = useState<File[]>([]);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [variants, setVariants] = useState<Variant[]>([]);
+
+
+
+
+    const compressAndSetImages = async (files: File[], type: 'images' | 'thumbnail') => {
+    setCompressing(true);
+    try {
+      const compressedFiles = await compressMultipleImages(files, {
+        maxWidth: 1200,
+        maxHeight: 1200,
+        quality: 0.8,
+        maxSizeMB: 1
+      });
+
+      if (type === 'images') {
+        setImages(prev => [...prev, ...compressedFiles]);
+      } else {
+        setThumbnail(compressedFiles[0]);
+      }
+
+      // Show compression results
+      const originalSize = files.reduce((sum, file) => sum + file.size, 0);
+      const compressedSize = compressedFiles.reduce((sum, file) => sum + file.size, 0);
+      const savings = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+      
+      if (compressedSize < originalSize) {
+        toast.success(`Images compressed - ${savings}% smaller`);
+      }
+    } catch (error) {
+      console.error('Compression error:', error);
+      // Fallback to original files
+      if (type === 'images') {
+        setImages(prev => [...prev, ...files]);
+      } else {
+        setThumbnail(files[0]);
+      }
+      toast.warning("Compression failed, using original images");
+    } finally {
+      setCompressing(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'images' | 'thumbnail') => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const fileArray = Array.from(files);
+    
+    // Validate file types
+    const invalidFiles = fileArray.filter(file => !file.type.startsWith('image/'));
+    if (invalidFiles.length > 0) {
+      toast.error("Please select valid image files");
+      return;
+    }
+
+    // Validate file sizes before compression
+    const largeFiles = fileArray.filter(file => file.size > 20 * 1024 * 1024); // 20MB
+    if (largeFiles.length > 0) {
+      toast.error("Some files are too large (max 20MB)");
+      return;
+    }
+
+    await compressAndSetImages(fileArray, type);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +105,7 @@ const AddProductPage = () => {
     try {
       const formData = new FormData(form);
 
-      // Append files to formData
+      // Append compressed files to formData
       images.forEach((image) => {
         formData.append("images", image);
       });
@@ -48,7 +115,6 @@ const AddProductPage = () => {
 
       // Append variants as JSON
       if (variants.length > 0) {
-        // Validate variants before submitting
         const invalidVariants = variants.filter(v => 
           !v.color.trim() || !v.size.trim() || v.stock < 0
         );
@@ -97,17 +163,85 @@ const AddProductPage = () => {
       setLoading(false);
     }
   };
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   setLoading(true);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'images' | 'thumbnail') => {
-    const files = e.target.files;
-    if (!files) return;
+  //   const form = e.currentTarget;
 
-    if (type === 'images') {
-      setImages(prev => [...prev, ...Array.from(files)]);
-    } else {
-      setThumbnail(files[0]);
-    }
-  };
+  //   try {
+  //     const formData = new FormData(form);
+
+  //     // Append files to formData
+  //     images.forEach((image) => {
+  //       formData.append("images", image);
+  //     });
+  //     if (thumbnail) {
+  //       formData.append("thumbnail", thumbnail);
+  //     }
+
+  //     // Append variants as JSON
+  //     if (variants.length > 0) {
+  //       // Validate variants before submitting
+  //       const invalidVariants = variants.filter(v => 
+  //         !v.color.trim() || !v.size.trim() || v.stock < 0
+  //       );
+        
+  //       if (invalidVariants.length > 0) {
+  //         throw new Error("Please fill all variant fields with valid values");
+  //       }
+
+  //       formData.append("variants", JSON.stringify(variants));
+  //     }
+
+  //     const res = await fetch("/api/products/create", {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     const text = await res.text();
+  //     let data;
+  //     try {
+  //       data = JSON.parse(text);
+  //     } catch {
+  //       console.error("Non-JSON response:", text);
+  //       throw new Error("Server did not return valid JSON");
+  //     }
+
+  //     if (!res.ok || !data.success) {
+  //       throw new Error(data?.message || "Failed to create product");
+  //     }
+
+  //     setMessage("✅ Product created successfully!");
+  //     toast.success("Product created successfully!");
+
+  //     form.reset();
+  //     setImages([]);
+  //     setThumbnail(null);
+  //     setVariants([]);
+  //     router.refresh();
+
+  //     setTimeout(() => setMessage(""), 3000);
+  //   } catch (err: unknown) {
+  //     let message = "Something went wrong";
+  //     if (typeof err === "string") message = err;
+  //     else if (err instanceof Error) message = err.message;
+  //     toast.error(message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'images' | 'thumbnail') => {
+  //   const files = e.target.files;
+  //   if (!files) return;
+
+  //   if (type === 'images') {
+  //     setImages(prev => [...prev, ...Array.from(files)]);
+  //   } else {
+  //     setThumbnail(files[0]);
+  //   }
+  // };
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
@@ -121,6 +255,9 @@ const AddProductPage = () => {
     const url = URL.createObjectURL(file);
     setPreviewImage(url);
   };
+
+    const totalImagesSizeMB = images.reduce((sum, file) => sum + file.size, 0) / 1024 / 1024;
+  const thumbnailSizeMB = thumbnail ? thumbnail.size / 1024 / 1024 : 0;
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
@@ -320,9 +457,39 @@ const AddProductPage = () => {
 
             <Separator />
 
-            {/* Images */}
+             {/* Images Section with Compression Info */}
             <div className="space-y-6">
-              <h3 className="text-lg font-medium">Images</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium">Images</h3>
+                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                  <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                  <span>Images are automatically compressed</span>
+                </div>
+              </div>
+
+              {/* Size Summary */}
+              {(images.length > 0 || thumbnail) && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex justify-between text-sm">
+                    <span>Total upload size:</span>
+                    <span className="font-medium">
+                      {(totalImagesSizeMB + thumbnailSizeMB).toFixed(2)} MB
+                    </span>
+                  </div>
+                  {thumbnail && (
+                    <div className="flex justify-between text-sm mt-1">
+                      <span>Thumbnail:</span>
+                      <span>{thumbnailSizeMB.toFixed(2)} MB</span>
+                    </div>
+                  )}
+                  {images.length > 0 && (
+                    <div className="flex justify-between text-sm mt-1">
+                      <span>Product images ({images.length}):</span>
+                      <span>{totalImagesSizeMB.toFixed(2)} MB</span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Thumbnail Upload */}
               <div className="space-y-4">
@@ -373,19 +540,24 @@ const AddProductPage = () => {
                       <div className="text-left">
                         <p className="font-medium">{thumbnail.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {(thumbnail.size / 1024 / 1024).toFixed(2)} MB
+                          {getFileSizeMB(thumbnail)} MB
+                          {compressing && <span className="text-blue-500 ml-2">Compressing...</span>}
                         </p>
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                      {compressing ? (
+                        <Loader2 className="h-8 w-8 mx-auto text-muted-foreground animate-spin" />
+                      ) : (
+                        <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                      )}
                       <div>
                         <Label
                           htmlFor="thumbnail-upload"
                           className="cursor-pointer font-medium text-primary hover:text-primary/80"
                         >
-                          Click to upload
+                          {compressing ? "Compressing..." : "Click to upload"}
                         </Label>
                         <Input
                           id="thumbnail-upload"
@@ -393,10 +565,11 @@ const AddProductPage = () => {
                           accept="image/*"
                           onChange={(e) => handleImageUpload(e, 'thumbnail')}
                           className="hidden"
+                          disabled={compressing}
                         />
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        PNG, JPG, JPEG up to 10MB
+                        PNG, JPG, JPEG up to 20MB (automatically compressed)
                       </p>
                     </div>
                   )}
@@ -450,12 +623,15 @@ const AddProductPage = () => {
                                 <X className="h-4 w-4" />
                               </Button>
                             </div>
+                            <div className="absolute bottom-1 left-1 bg-black bg-opacity-70 text-white text-xs px-1 rounded">
+                              {getFileSizeMB(image)}MB
+                            </div>
                           </div>
                         ))}
                       </div>
                       <div className="flex items-center justify-between">
                         <Badge variant="secondary">
-                          {images.length} image{images.length !== 1 ? 's' : ''} selected
+                          {images.length} image{images.length !== 1 ? 's' : ''} • {totalImagesSizeMB.toFixed(2)} MB
                         </Badge>
                         <Label
                           htmlFor="images-upload"
@@ -470,18 +646,23 @@ const AddProductPage = () => {
                           accept="image/*"
                           onChange={(e) => handleImageUpload(e, 'images')}
                           className="hidden"
+                          disabled={compressing}
                         />
                       </div>
                     </div>
                   ) : (
                     <div className="text-center space-y-2">
-                      <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                      {compressing ? (
+                        <Loader2 className="h-8 w-8 mx-auto text-muted-foreground animate-spin" />
+                      ) : (
+                        <Upload className="h-8 w-8 mx-auto text-muted-foreground" />
+                      )}
                       <div>
                         <Label
                           htmlFor="images-upload"
                           className="cursor-pointer font-medium text-primary hover:text-primary/80"
                         >
-                          Click to upload
+                          {compressing ? "Compressing..." : "Click to upload"}
                         </Label>
                         <Input
                           id="images-upload"
@@ -490,10 +671,11 @@ const AddProductPage = () => {
                           accept="image/*"
                           onChange={(e) => handleImageUpload(e, 'images')}
                           className="hidden"
+                          disabled={compressing}
                         />
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        PNG, JPG, JPEG up to 10MB each
+                        PNG, JPG, JPEG up to 20MB each (automatically compressed)
                       </p>
                     </div>
                   )}
@@ -506,7 +688,7 @@ const AddProductPage = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={loading}
+              disabled={loading || compressing}
               className="w-full"
               size="lg"
             >
@@ -514,6 +696,11 @@ const AddProductPage = () => {
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Creating Product...
+                </>
+              ) : compressing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Compressing Images...
                 </>
               ) : (
                 "Create Product"
