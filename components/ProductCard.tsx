@@ -24,13 +24,14 @@ const ProductCard: React.FC<Props> = ({ product }) => {
   if (!product) return null;
 
   const imageUrl = product.images?.[currentImageIndex] || product.thumbnail || "/fallback.jpg";
-const hasDiscount = product.discountPrice !== undefined && product.discountPrice < product.price;
+const hasDiscount =
+  product.discountPrice != null && product.discountPrice < product.price;
+
 const discountPercentage = hasDiscount
-  ? Math.round(((product.price - (product.discountPrice ?? 0)) / product.price) * 100)
+  ? Math.round(((product.price - (product.discountPrice ?? product.price)) / product.price) * 100)
   : 0;
 
-
-  const isLowStock = product.stock < 20;
+const isLowStock = (product.stock ?? 0) < 20;
 
   return (
     <TooltipProvider>
@@ -108,13 +109,14 @@ const discountPercentage = hasDiscount
           </div>
 
           {/* Stock Indicator */}
-          {isLowStock && product.stock > 0 && (
-            <div className="absolute top-3 left-1/2 transform -translate-x-1/2">
-              <Badge variant="destructive" className="text-xs animate-pulse">
-                ⚠️ Only {product.stock} left!
-              </Badge>
-            </div>
-          )}
+   {isLowStock && (product.stock ?? 0) > 0 && (
+  <div className="absolute top-3 left-1/2 transform -translate-x-1/2">
+    <Badge variant="destructive" className="text-xs animate-pulse">
+      ⚠️ Only {product.stock ?? 0} left!
+    </Badge>
+  </div>
+)}
+
         </div>
 
         {/* Product Info */}
@@ -171,9 +173,9 @@ const discountPercentage = hasDiscount
             </div>
 
             {/* Sold Count */}
-            {product.sold > 0 && (
-              <span className="text-xs text-gray-500">{product.sold}+ sold</span>
-            )}
+            {(product.sold ?? 0) > 0 && (
+  <span className="text-xs text-gray-500">{product.sold ?? 0}+ sold</span>
+)}
           </div>
 
           {/* Features */}

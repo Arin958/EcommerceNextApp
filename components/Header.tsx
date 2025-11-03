@@ -11,19 +11,76 @@ import {
 } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Menu, ShoppingBag, X, Search } from 'lucide-react'
+import { Menu, ShoppingBag, X, Search, User2, User, Package, UserCheck2Icon, Bell } from 'lucide-react'
 import { Button } from './ui/button'
-import { User } from '@/types'
+
 import CartSlider from './CartSlider'
 import CartLength from './CartLength'
+import { INotification, User as UserType } from '@/types'
+import UserNotificationSideBar from './UserNotificationSideBar'
 
-const Header = ({ adminUser }: { adminUser: User | null }) => {
+const Header = ({ adminUser }: { adminUser: UserType | null }) => {
     const { user, isSignedIn } = useUser()
     const router = useRouter()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [isCartOpen, setIsCartOpen] = useState(false)
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+    const [unreadCount, setUnreadCount] = useState(0)
+
+
+    
+    useEffect(() => {
+        if(!isSignedIn) {
+          setUnreadCount(0)
+          return
+        }
+
+        const fetchUnreadCount = async () => {
+            try {
+                const res = await fetch("api/notifications/get", { cache: "no-store" })
+
+                const result = await res.json()
+                const notifications = result.data || []
+
+
+                const unread = notifications.filter((notif: INotification) => !notif.isRead).length
+                setUnreadCount(unread)
+            } catch (error) {
+                console.log("Error fetching Notification", error)
+            }
+        }
+
+        fetchUnreadCount()
+
+   const interval = setInterval(fetchUnreadCount, 30000) // Refresh every 30 seconds
+
+        return () => clearInterval(interval)
+    }
+    , [isSignedIn ])
+
+
+        useEffect(() => {
+        if (!isNotificationsOpen && isSignedIn) {
+            const refreshCount = async () => {
+                try {
+                    const res = await fetch("/api/notifications/get", { 
+                        cache: "no-store" 
+                    })
+                    const result = await res.json()
+                    const notifications = result.data || []
+                    const unread = notifications.filter((notif: INotification) => !notif.isRead).length
+                    setUnreadCount(unread)
+                } catch (error) {
+                    console.error("Error refreshing notifications count:", error)
+                }
+            }
+            refreshCount()
+        }
+    }, [isNotificationsOpen, isSignedIn])
+
+
 
     useEffect(() => {
         if (isSignedIn && user) {
@@ -70,7 +127,7 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
     return (
         <>
 
-            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+            <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled
                 ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100'
                 : 'bg-white border-b border-gray-200'
                 }`}>
@@ -125,6 +182,50 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
                                 <Search size={20} />
                             </button>
 
+                            {/* DropDown */}
+                            {isSignedIn && user && (
+
+                                <div className="relative group">
+                                    <button className="rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center">
+                                        <User2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+
+                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                        <div className="py-2">
+                                            <Link
+                                                href="/my-profile"
+                                                className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                            >
+                                                <User className="w-4 h-4 mr-3" />
+                                                My Profile
+                                            </Link>
+                                            <Link
+                                                href="/my-orders"
+                                                className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                            >
+                                                <Package className="w-4 h-4 mr-3" />
+                                                My Orders
+                                            </Link>
+                                            {adminUser && adminUser.role === "admin" && (
+                                                <Link
+                                                    href="/admin"
+                                                    onClick={() => setIsMenuOpen(false)}
+                                                    className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                                                >
+                                                    <UserCheck2Icon className="w-4 h-4 mr-3" />
+                                                    Admin Panel
+                                                </Link>
+                                            )}
+                                            <div className="border-t border-gray-100 my-1"></div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+
                             {/* Shopping Bag */}
                             <button onClick={() => setIsCartOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
                                 <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -132,6 +233,21 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
                                     <CartLength />
                                 </span>
                             </button>
+
+                            {/* Notification Bar */}
+                             {isSignedIn && user && (
+                                <button 
+                                    onClick={() => setIsNotificationsOpen(true)} 
+                                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
+                                >
+                                    <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </button>
+                            )}
 
                             {/* Auth Buttons */}
                             <div className="hidden sm:flex items-center space-x-3 lg:space-x-4">
@@ -149,14 +265,7 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
                                 </SignedOut>
                                 <SignedIn>
                                     <div className="flex items-center space-x-3 lg:space-x-4">
-                                        {adminUser && adminUser.role === "admin" && (
-                                            <Link
-                                                href="/admin"
-                                                className="text-gray-700 hover:text-black font-medium transition-colors duration-200 text-sm lg:text-base"
-                                            >
-                                                Admin
-                                            </Link>
-                                        )}
+
                                         <UserButton
                                             appearance={{
                                                 elements: {
@@ -195,7 +304,7 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
 
                     {/* Mobile Navigation */}
                     {isMenuOpen && (
-                        <div className="lg:hidden border-t border-gray-200 bg-white animate-in slide-in-from-top duration-300">
+                        <div className="lg:hidden border-t border-gray-200 bg-white animate-in slide-in-from-top duration-300 z-40">
                             <nav className="flex flex-col py-4">
                                 {navLinks.map((link) => (
                                     <Link
@@ -233,15 +342,7 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
                                     </SignedOut>
                                     <SignedIn>
                                         <div className="space-y-3">
-                                            {adminUser && adminUser.role === "admin" && (
-                                                <Link
-                                                    href="/admin"
-                                                    onClick={() => setIsMenuOpen(false)}
-                                                    className="block text-gray-700 hover:text-black font-medium py-3 px-2 rounded-lg hover:bg-gray-50 transition-all duration-200"
-                                                >
-                                                    Admin Panel
-                                                </Link>
-                                            )}
+
                                             <div className="flex items-center justify-between py-3 px-2">
                                                 <span className="text-gray-700 font-medium">Account</span>
                                                 <UserButton />
@@ -256,6 +357,7 @@ const Header = ({ adminUser }: { adminUser: User | null }) => {
             </header>
 
             <CartSlider isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+            <UserNotificationSideBar isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} />
 
         </>
     )

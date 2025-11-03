@@ -53,21 +53,24 @@ export async function POST(req: Request) {
 
     const newItem: CartItem = { productId, name, price, image, quantity, size, color };
 
-    if (!cart) {
-      cart = await Cart.create({ ...identifier, items: [newItem] });
-    } else {
-      const existingItemIndex = cart.items.findIndex(
-        (i: CartItem) => i.productId === productId
-      );
+ if (!cart) {
+  cart = await Cart.create({ ...identifier, items: [newItem] });
+} else {
+  const existingItemIndex = cart.items.findIndex(
+    (i: CartItem) =>
+      i.productId === productId &&
+      i.size === size &&
+      i.color === color
+  );
 
-      if (existingItemIndex > -1) {
-        cart.items[existingItemIndex].quantity += quantity;
-      } else {
-        cart.items.push(newItem);
-      }
+  if (existingItemIndex > -1) {
+    cart.items[existingItemIndex].quantity += quantity;
+  } else {
+    cart.items.push(newItem);
+  }
 
-      await cart.save();
-    }
+  await cart.save();
+}
 
     return new Response(JSON.stringify({ cart }), { status: 200 });
   } catch (err: unknown) {

@@ -2,6 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import { User } from "@/schema/schema";
+import { Sidebar } from "@/components/admin/AdminSidebar";
+
+
 
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
@@ -12,6 +15,8 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     redirect("/sign-in");
   }
 
+  
+
   await connectDB();
   const user = await User.findOne({ clerkId: userId });
 
@@ -21,8 +26,9 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main className="flex min-h-screen w-full flex-row">
-      <div className="flex min-h-screen flex-1 flex-col p-5 sm:p-10">
-        <h1>Admin Dashboard</h1>
+      <Sidebar/>
+      <div className='flex min-h-screen flex-1 flex-col p-2 w[calc(100%-264px)]'>
+        
         {children}
       </div>
     </main>

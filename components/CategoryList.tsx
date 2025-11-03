@@ -27,12 +27,13 @@ export default async function CategorySection() {
         <div className="mt-10 mb-10">
 
             <div className="text-center mb-12">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                <h2 className="font-bebas text-3xl sm:text-4xl md:text-5xl tracking-wide">
                     Shop By Category
-                </h1>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                </h2>
+                <p className="text-gray-500 text-sm md:text-base mt-2">
                     Discover our curated collections for every style and occasion
                 </p>
+                <div className="w-24 h-1 bg-black mx-auto mt-4"></div>
             </div>
             <div className="grid grid-cols-2 gap-6">
                 {uniqueCategories.map((cat, i) => (

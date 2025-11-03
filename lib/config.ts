@@ -8,6 +8,16 @@ const configEnv = {
         },
         mongodb: {
             uri: process.env.MONGODB_URI!
+        },
+        paypal: {
+            api: process.env.PAYPAL_API_URL!,
+            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+            clientSecret: process.env.PAYPAL_CLIENT_SECRET!
+        },
+        cloudinary: {
+            cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
+            apiKey: process.env.CLOUDINARY_API_KEY!,
+            apiSecret: process.env.CLOUDINARY_API_SECRET!
         }
     }
 }

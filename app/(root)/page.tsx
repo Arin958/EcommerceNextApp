@@ -89,7 +89,7 @@ export default async function Home() {
       <div className="mt-10 mb-10">
 
 
-        <ProductDetail product={products[0]}  />
+        <ProductDetail product={products[0]} reviewSection={false}  />
       </div>
       <CategorySection />
       <AboutSection />

@@ -7,6 +7,7 @@
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import MergeCartOnLogin from '@/components/MergeCart';
+import PayPalProvider from '@/components/PayPalProvider';
 import connectDB from '@/lib/mongodb';
 import { User } from '@/schema/schema';
 
@@ -18,7 +19,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
 
   await connectDB();
-  
+
   const { userId } = await auth();
 
 
@@ -32,11 +33,18 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main className='root-container'>
+
       <MergeCartOnLogin />
       <div className='mx-auto px-10 '>
         <Header adminUser={adminUser} />
 
-        <div className='mt-20 pb-20'>{children}</div>
+        <div className='mt-20 pb-20'>
+          <PayPalProvider>
+
+
+            {children}
+          </PayPalProvider>
+        </div>
       </div>
       <Footer />
 
