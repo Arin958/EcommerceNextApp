@@ -1,7 +1,6 @@
-// app/api/orders/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { Cart, Notification, Order, User } from "@/schema/schema";
+import { Cart, Notification, Order, Product, User } from "@/schema/schema";
 import connectDB from "@/lib/mongodb";
 
 export async function POST(req: Request) {
@@ -20,7 +19,7 @@ export async function POST(req: Request) {
       billingAddress,
       notes,
       paypalOrderId,
-      transactionId
+      transactionId,
     } = body;
 
     const cart = await Cart.findOne({ clerkId: userId });
@@ -29,7 +28,8 @@ export async function POST(req: Request) {
     }
 
     const subtotal = cart.items.reduce(
-      (acc: number, item: { price: number; quantity: number }) => acc + item.price * item.quantity,
+      (acc: number, item: { price: number; quantity: number }) =>
+        acc + item.price * item.quantity,
       0
     );
     const shipping = subtotal > 500 ? 0 : 50;
@@ -54,58 +54,82 @@ export async function POST(req: Request) {
       billingAddress: billingAddress || shippingAddress,
       transactionId: paymentMethod === "paypal" ? transactionId : undefined,
       notes,
-      ...(paymentMethod === "paypal" && { paypalOrderId })
+      ...(paymentMethod === "paypal" && { paypalOrderId }),
     });
 
-    // Clear Cart after order
+    // 🔹 Decrease stock for products and variants
+for (const item of cart.items) {
+  await Product.updateOne(
+    {
+      _id: item.productId,
+      "variants.color": item.color,
+      "variants.size": item.size,
+    },
+    {
+      $inc: {
+        sold: item.quantity,
+        stock: -item.quantity,
+        "variants.$.stock": -item.quantity,
+      },
+    }
+  );
+}
+    // 🔹 Clear Cart after order
     await Cart.deleteOne({ clerkId: userId });
 
-
+    // 🔹 Notify Admins
     const sender = await User.findOne({ clerkId: userId });
-
-    if(!sender) {
+    if (!sender) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
+
     const admins = await User.find({ role: "admin" });
 
-
-       const notifications = admins.map((admin: { _id: string; clerkId: string; username: string; email: string; role: string; }) => ({
-      recipient: {
-        _id: admin._id.toString(),
-        clerkId: admin.clerkId,
-        username: admin.username,
-        email: admin.email,
-        role: admin.role,
-      },
-      sender: {
-        _id: sender._id.toString(),
-        clerkId: sender.clerkId,
-        username: sender.username,
-        email: sender.email,
-        role: sender.role,
-      },
-      type: "order_placed",
-      title: "New Order Placed",
-      message: `${sender.username} placed a new order (${order.orderId})`,
-      orderId: order.orderId,
-      url: `/admin/orders/${order.orderId}`,
-    }));
+    const notifications = admins.map(
+      (admin: {
+        _id: string;
+        clerkId: string;
+        username: string;
+        email: string;
+        role: string;
+      }) => ({
+        recipient: {
+          _id: admin._id.toString(),
+          clerkId: admin.clerkId,
+          username: admin.username,
+          email: admin.email,
+          role: admin.role,
+        },
+        sender: {
+          _id: sender._id.toString(),
+          clerkId: sender.clerkId,
+          username: sender.username,
+          email: sender.email,
+          role: sender.role,
+        },
+        type: "order_placed",
+        title: "New Order Placed",
+        message: `${sender.username} placed a new order (${order.orderId})`,
+        orderId: order.orderId,
+        url: `/admin/orders/${order.orderId}`,
+      })
+    );
 
     await Notification.insertMany(notifications);
 
-
-    
-
-    return NextResponse.json({ 
-      message: "Order Placed", 
-      order: {
-        id: order._id,
-        orderId: order.orderId,
-        total: order.total,
-        paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus
-      }
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        message: "Order Placed",
+        order: {
+          id: order._id,
+          orderId: order.orderId,
+          total: order.total,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+        },
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Order Error:", error);
     return NextResponse.json({ message: "Server Error" }, { status: 500 });

@@ -30,9 +30,9 @@ export interface IProduct extends Document {
   sold?: number;
   variants?: {
     [x: string]: Key | null | undefined;
-    color?: string;
-    size?: string;
-    stock?: number;
+    color: string;
+    size: string;
+    stock: number;
   }[];
   tags?: string[];
   collections?: string[];

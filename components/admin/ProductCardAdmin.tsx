@@ -37,6 +37,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onView,
 }) => {
 
+  const totalStock = product?.variants?.reduce((sum, variant) => sum + variant?.stock, 0)
+
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow duration-300">
       <CardHeader className="p-0">
@@ -88,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Stats */}
    <ProductStats
-  stock={product.stock ?? product.variants?.[0]?.stock ?? 0}
+  stock={totalStock ?? 0}
   sold={product.sold ?? 0}
   totalReviews={product.totalReviews}
 />

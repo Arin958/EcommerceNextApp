@@ -1,58 +1,73 @@
-import { Notification, Order, User } from "@/schema/schema";
+import connectDB from "@/lib/mongodb";
+import { Notification, Order, Product, User } from "@/schema/schema";
+import { Variant } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function PUT(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+    await connectDB();
 
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
-export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
-    try {
-        const {id} = await context.params;
-        const {userId} = await auth();
-        if(!userId) {
-            return NextResponse.json({message: "Unauthorized"}, {status: 401})
-        }
-
-
-        const user = await User.findOne({clerkId: userId});
-
-        if(!user) {
-            return NextResponse.json({message: "User not found"}, {status: 404})
-        }
-
-        if(user.role !== "admin") {
-            return NextResponse.json({message: "Unauthorized"}, {status: 403})
-        }
-
-            const admin = await User.findOne({ clerkId: userId });
+    const admin = await User.findOne({ clerkId: userId });
     if (!admin) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
-
     if (admin.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
+    const body = await req.json();
+    const { orderStatus, paymentStatus } = body;
 
-        const body = await req.json();
-        const {orderStatus, paymentStatus} = body;
+    if (!orderStatus && !paymentStatus) {
+      return NextResponse.json(
+        { message: "Please provide at least one field to update" },
+        { status: 400 }
+      );
+    }
 
-        if(!orderStatus && !paymentStatus) {
-            return NextResponse.json({message: "Please provide at least one field to update"}, {status: 400})
+    const order = await Order.findById(id);
+    if (!order) {
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
+    }
+
+    // 🔹 Update order fields
+    if (orderStatus) order.orderStatus = orderStatus;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+
+    await order.save();
+
+    // 🔹 When payment is successful → update product sold count
+if (paymentStatus === "paid") {
+  if (Array.isArray(order.items)) {
+    for (const item of order.items) {
+      await Product.updateOne(
+        {
+          _id: item.productId,
+          "variants.color": item.color,
+          "variants.size": item.size,
+        },
+        {
+          $inc: {
+            sold: item.quantity,
+            stock: -item.quantity,
+            "variants.$.stock": -item.quantity,
+          },
         }
-
-        const order = await Order.findById(id);
-
-        if(!order) {
-            return NextResponse.json({message: "Order not found"}, {status: 404})
-        }
-
-
-        if(orderStatus) order.orderStatus = orderStatus;
-        if(paymentStatus) order.paymentStatus = paymentStatus;
-
-
-        await order.save();
-          // 🔹 Find the user who placed the order
+      );
+    }
+  }
+} 
+    // 🔹 Find the user who placed the order
     const recipient = await User.findOne({ clerkId: order.clerkId });
     if (!recipient) {
       return NextResponse.json(
@@ -124,7 +139,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       }
     }
 
-    // 🔹 Create Notification
+    // 🔹 Create notification
     await Notification.create({
       recipient: {
         _id: recipient._id.toString(),
@@ -146,15 +161,15 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       orderId: order.orderId,
       url: `/orders/${order.orderId}`,
     });
-        return NextResponse.json({message: "Order updated successfully"}, {status: 200})
 
-
-
-    } catch (error: unknown) {
-        let msg = 'Something went wrong'
-        if(typeof error === 'string') msg = error
-        else if(error instanceof Error) msg = error.message
-        return NextResponse.json({message: msg}, {status: 500})
-        
-    }
+    return NextResponse.json(
+      { message: "Order updated successfully" },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    let msg = "Something went wrong";
+    if (typeof error === "string") msg = error;
+    else if (error instanceof Error) msg = error.message;
+    return NextResponse.json({ message: msg }, { status: 500 });
+  }
 }
