@@ -11,7 +11,7 @@ import {
 } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Menu, ShoppingBag, X, Search, User2, User, Package, UserCheck2Icon, Bell } from 'lucide-react'
+import { Menu, ShoppingBag, X, Search, User2, User, Package, UserCheck2Icon, Bell, ChevronDown } from 'lucide-react'
 import { Button } from './ui/button'
 
 import CartSlider from './CartSlider'
@@ -28,9 +28,24 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
     const [isCartOpen, setIsCartOpen] = useState(false)
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
     const [unreadCount, setUnreadCount] = useState(0)
+    const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
+    const [categories, setCategories] = useState<string[]>([])
 
+    // Fetch unique categories from products
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch('/api/category')
+                const data = await res.json()
+                setCategories(data.categories || [])
+            } catch (error) {
+                console.error('Error fetching categories:', error)
+            }
+        }
+        fetchCategories()
+    }, [])
 
-    
+    // Your existing useEffect hooks remain the same
     useEffect(() => {
         if(!isSignedIn) {
           setUnreadCount(0)
@@ -40,11 +55,8 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
         const fetchUnreadCount = async () => {
             try {
                 const res = await fetch("api/notifications/get", { cache: "no-store" })
-
                 const result = await res.json()
                 const notifications = result.data || []
-
-
                 const unread = notifications.filter((notif: INotification) => !notif.isRead).length
                 setUnreadCount(unread)
             } catch (error) {
@@ -53,15 +65,11 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
         }
 
         fetchUnreadCount()
-
-   const interval = setInterval(fetchUnreadCount, 30000) // Refresh every 30 seconds
-
+        const interval = setInterval(fetchUnreadCount, 30000)
         return () => clearInterval(interval)
-    }
-    , [isSignedIn ])
+    }, [isSignedIn])
 
-
-        useEffect(() => {
+    useEffect(() => {
         if (!isNotificationsOpen && isSignedIn) {
             const refreshCount = async () => {
                 try {
@@ -80,8 +88,6 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
         }
     }, [isNotificationsOpen, isSignedIn])
 
-
-
     useEffect(() => {
         if (isSignedIn && user) {
             fetch("/api/sync-user", {
@@ -93,7 +99,6 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
             }).then(() => router.push("/"))
         }
     }, [isSignedIn, user, router])
-
 
     useEffect(() => {
         const handleScroll = () => {
@@ -110,23 +115,34 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
             if (isMenuOpen && !target.closest('header')) {
                 setIsMenuOpen(false)
             }
+            if (isCategoriesOpen && !target.closest('.categories-dropdown')) {
+                setIsCategoriesOpen(false)
+            }
         }
 
         document.addEventListener('click', handleClickOutside)
         return () => document.removeEventListener('click', handleClickOutside)
-    }, [isMenuOpen])
+    }, [isMenuOpen, isCategoriesOpen])
 
-    const navLinks = [
-        { href: "/", label: "Home" },
-        { href: "/categories", label: "Categories" },
-        { href: "/shop", label: "Shop" },
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" }
-    ]
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/shop", label: "Shop" },
+
+    { 
+        href: "/shop?category=Hoodies", 
+        label: "Hoodies" 
+    },
+  
+    { 
+        href: "/shop?category=Accessories", 
+        label: "Accessories" 
+    },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" }
+]
 
     return (
         <>
-
             <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled
                 ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100'
                 : 'bg-white border-b border-gray-200'
@@ -158,6 +174,38 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
                                 </Link>
                             ))}
+                            
+                            {/* Categories Dropdown */}
+                            <div className="categories-dropdown relative group">
+                                <button 
+                                    onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                                    className="flex items-center space-x-1 text-gray-700 hover:text-black font-medium transition-colors duration-200 text-sm xl:text-base"
+                                >
+                                    <span>Categories</span>
+                                    <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
+                                </button>
+                                
+                                {/* Dropdown Menu */}
+                                {isCategoriesOpen && (
+                                    <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                                        {categories.map((category) => (
+                                            <Link
+                                                key={category}
+                                                href={`/shop?category=${encodeURIComponent(category)}`}
+                                                onClick={() => setIsCategoriesOpen(false)}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors"
+                                            >
+                                                {category}
+                                            </Link>
+                                        ))}
+                                        {categories.length === 0 && (
+                                            <div className="px-4 py-2 text-sm text-gray-500">
+                                                No categories found
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </nav>
 
                         {/* Search Bar - Desktop */}
@@ -184,14 +232,12 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
 
                             {/* DropDown */}
                             {isSignedIn && user && (
-
                                 <div className="relative group">
                                     <button className="rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center">
                                         <User2 className="w-5 h-5 sm:w-6 sm:h-6" />
                                     </button>
 
                                     {/* Dropdown Menu */}
-
                                     <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                         <div className="py-2">
                                             <Link
@@ -219,12 +265,10 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                                 </Link>
                                             )}
                                             <div className="border-t border-gray-100 my-1"></div>
-
                                         </div>
                                     </div>
                                 </div>
                             )}
-
 
                             {/* Shopping Bag */}
                             <button onClick={() => setIsCartOpen(true)} className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
@@ -235,7 +279,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                             </button>
 
                             {/* Notification Bar */}
-                             {isSignedIn && user && (
+                            {isSignedIn && user && (
                                 <button 
                                     onClick={() => setIsNotificationsOpen(true)} 
                                     className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
@@ -265,7 +309,6 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                 </SignedOut>
                                 <SignedIn>
                                     <div className="flex items-center space-x-3 lg:space-x-4">
-
                                         <UserButton
                                             appearance={{
                                                 elements: {
@@ -316,6 +359,28 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                         {link.label}
                                     </Link>
                                 ))}
+                                
+                                {/* Mobile Categories */}
+                                <div className="border-b border-gray-100">
+                                    <div className="px-6 py-3 text-gray-700 font-medium">Categories</div>
+                                    <div className="pb-2">
+                                        {categories.map((category) => (
+                                            <Link
+                                                key={category}
+                                                href={`/shop?category=${encodeURIComponent(category)}`}
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="block py-2 px-10 text-sm text-gray-600 hover:text-black hover:bg-gray-50 transition-colors"
+                                            >
+                                                {category}
+                                            </Link>
+                                        ))}
+                                        {categories.length === 0 && (
+                                            <div className="py-2 px-10 text-sm text-gray-500">
+                                                No categories found
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
 
                                 {/* Mobile Auth Section */}
                                 <div className="border-t border-gray-200 pt-4 px-6 space-y-3">
@@ -342,7 +407,6 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                     </SignedOut>
                                     <SignedIn>
                                         <div className="space-y-3">
-
                                             <div className="flex items-center justify-between py-3 px-2">
                                                 <span className="text-gray-700 font-medium">Account</span>
                                                 <UserButton />
@@ -358,7 +422,6 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
 
             <CartSlider isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
             <UserNotificationSideBar isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} />
-
         </>
     )
 }
