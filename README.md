@@ -28,9 +28,7 @@ Link: (https://ecommerce-next-app-sx5f-bvkcrz0io-arin958s-projects.vercel.app)
 - Managing state with Redux Toolkit
 - Deploying production apps on Vercel
 
----
-
-## 👋 About Me
-**Arin Bajracharya**  
+ About Me
+Arin Bajracharya  
 Full-stack JavaScript developer passionate about building fast, scalable web apps.  
-📧 arin958@example.com | 🌐 [GitHub](https://github.com/Arin958)
+Email: arinbajracharya9@gmail.com
