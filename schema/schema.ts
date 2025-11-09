@@ -70,12 +70,14 @@ const CartItemSchema = new Schema<ICartItem>(
 
 const CartSchema = new Schema<ICart>(
   {
-    clerkId: { type: String, unique: true, sparse: true },
-    guestId: { type: String, unique: true, sparse: true },
+    clerkId: { type: String },
+    guestId: { type: String },
     items: { type: [CartItemSchema], default: [] },
   },
   { timestamps: true }
 );
+
+CartSchema.index({ clerkId: 1, guestId: 1 }, { unique: true, sparse: true });
 
 const OrderItemSchema = new Schema<IOrderItem>({
   productId: { type: String, required: true },

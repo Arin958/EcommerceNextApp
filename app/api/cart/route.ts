@@ -25,7 +25,7 @@ interface AddToCartRequest {
 }
 
 export async function POST(req: Request) {
-  await connectDB()
+  await connectDB();
   try {
     const { userId } = await auth();
     const body: AddToCartRequest = await req.json();
@@ -38,42 +38,44 @@ export async function POST(req: Request) {
       });
     }
 
-    // Identify user as guest or logged-in
-    const identifier: { clerkId?: string; guestId?: string } = userId
-      ? { clerkId: userId }
-      : guestId
-      ? { guestId }
-      : {};
-
-    if (!identifier.clerkId && !identifier.guestId) {
+    // For guest users, ensure we have a guestId and don't use clerkId at all
+    let query, createData;
+    if (userId) {
+      query = { clerkId: userId };
+      createData = { clerkId: userId };
+    } else if (guestId) {
+      query = { guestId };
+      createData = { guestId };
+    } else {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     }
 
-    let cart = await Cart.findOne(identifier);
+    let cart = await Cart.findOne(query);
 
     const newItem: CartItem = { productId, name, price, image, quantity, size, color };
 
- if (!cart) {
-  cart = await Cart.create({ ...identifier, items: [newItem] });
-} else {
-  const existingItemIndex = cart.items.findIndex(
-    (i: CartItem) =>
-      i.productId === productId &&
-      i.size === size &&
-      i.color === color
-  );
+    if (!cart) {
+      cart = await Cart.create({ ...createData, items: [newItem] });
+    } else {
+      const existingItemIndex = cart.items.findIndex(
+        (i: CartItem) =>
+          i.productId === productId &&
+          i.size === size &&
+          i.color === color
+      );
 
-  if (existingItemIndex > -1) {
-    cart.items[existingItemIndex].quantity += quantity;
-  } else {
-    cart.items.push(newItem);
-  }
+      if (existingItemIndex > -1) {
+        cart.items[existingItemIndex].quantity += quantity;
+      } else {
+        cart.items.push(newItem);
+      }
 
-  await cart.save();
-}
+      await cart.save();
+    }
 
     return new Response(JSON.stringify({ cart }), { status: 200 });
   } catch (err: unknown) {
+    console.log(err);
     let message = "Something went wrong";
     if (err instanceof Error) message = err.message;
     return new Response(JSON.stringify({ error: message }), { status: 500 });

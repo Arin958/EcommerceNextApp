@@ -6,8 +6,8 @@ import React from 'react';
 import { IProduct } from '@/types';
 import ProductDetail from '@/components/ProductDetails';
 
-const Page = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
 
   const product = await Product.findById(id).lean<IProduct>();
   const productData = product ? JSON.parse(JSON.stringify(product)) : null;
