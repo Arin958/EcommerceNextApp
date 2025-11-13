@@ -3,7 +3,7 @@
 A modern full-stack eCommerce app built with Next.js 16, Clerk, MongoDB, and Paypal featuring authentication, product management, and secure checkout. Fully deployed on Vercel.
 
 # Live Demo
-Link: (https://ecommerce-next-app-sx5f-bvkcrz0io-arin958s-projects.vercel.app)
+Link: (https://ecommerce-next-app-rab7.vercel.app)
 
 
 # Tech Stack I have used:
