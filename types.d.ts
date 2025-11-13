@@ -1,6 +1,7 @@
 
 
 interface User {
+  _id: string;
   clerkId: string;
   username: string;
   email: string;

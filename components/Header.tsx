@@ -360,28 +360,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                     </Link>
                                 ))}
                                 
-                                {/* Mobile Categories */}
-                                <div className="border-b border-gray-100">
-                                    <div className="px-6 py-3 text-gray-700 font-medium">Categories</div>
-                                    <div className="pb-2">
-                                        {categories.map((category) => (
-                                            <Link
-                                                key={category}
-                                                href={`/shop?category=${encodeURIComponent(category)}`}
-                                                onClick={() => setIsMenuOpen(false)}
-                                                className="block py-2 px-10 text-sm text-gray-600 hover:text-black hover:bg-gray-50 transition-colors"
-                                            >
-                                                {category}
-                                            </Link>
-                                        ))}
-                                        {categories.length === 0 && (
-                                            <div className="py-2 px-10 text-sm text-gray-500">
-                                                No categories found
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
+                         
                                 {/* Mobile Auth Section */}
                                 <div className="border-t border-gray-200 pt-4 px-6 space-y-3">
                                     <SignedOut>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -42,31 +42,31 @@ const sidebarItems = [
     href: "/admin/customers",
     icon: Users,
   },
-  {
-    name: "Categories",
-    href: "/admin/categories",
-    icon: Tag,
-  },
-  {
-    name: "Analytics",
-    href: "/admin/analytics",
-    icon: BarChart3,
-  },
-  {
-    name: "Reviews",
-    href: "/admin/reviews",
-    icon: MessageSquare,
-  },
-  {
-    name: "Discounts",
-    href: "/admin/discounts",
-    icon: DollarSign,
-  },
+
 ];
 
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
+
+  // Check screen size on mount and resize
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const mobile = window.innerWidth < 768; // md breakpoint is 768px in Tailwind
+      setIsMobile(mobile);
+      setIsCollapsed(mobile);
+    };
+
+    // Initial check
+    checkScreenSize();
+
+    // Add event listener
+    window.addEventListener("resize", checkScreenSize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -76,8 +76,11 @@ export function Sidebar() {
     <aside
       className={cn(
         "flex flex-col bg-background border-r transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-16" : "w-64"
+        isCollapsed ? "w-16" : "w-64",
+        // Optional: Add responsive classes for extra safety
+        "md:data-[state=collapsed]:w-16"
       )}
+      data-state={isCollapsed ? "collapsed" : "expanded"}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
@@ -119,6 +122,7 @@ export function Sidebar() {
                     : "text-muted-foreground",
                   isCollapsed ? "justify-center" : "justify-start"
                 )}
+                title={isCollapsed ? item.name : undefined}
               >
                 <item.icon className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
                 {!isCollapsed && <span>{item.name}</span>}
@@ -131,19 +135,7 @@ export function Sidebar() {
 
         {/* Settings Section */}
         <nav className="space-y-1">
-          <Link
-            href="/admin/settings"
-            className={cn(
-              "flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground",
-              pathname === "/admin/settings"
-                ? "bg-accent text-accent-foreground"
-                : "text-muted-foreground",
-              isCollapsed ? "justify-center" : "justify-start"
-            )}
-          >
-            <Settings className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
-            {!isCollapsed && <span>Settings</span>}
-          </Link>
+     
         </nav>
       </ScrollArea>
 
@@ -158,7 +150,6 @@ export function Sidebar() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">Admin User</p>
-              <p className="text-xs text-muted-foreground truncate">admin@example.com</p>
             </div>
           </div>
         </div>

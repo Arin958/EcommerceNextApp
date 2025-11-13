@@ -53,6 +53,7 @@ const ContactPage = () => {
       setSubmitStatus('success')
       setFormData({ name: '', email: '', company: '', subject: '', message: '' })
     } catch (error) {
+      console.error('Error submitting form:', error)
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
