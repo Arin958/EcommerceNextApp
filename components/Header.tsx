@@ -47,9 +47,9 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
 
     // Your existing useEffect hooks remain the same
     useEffect(() => {
-        if(!isSignedIn) {
-          setUnreadCount(0)
-          return
+        if (!isSignedIn) {
+            setUnreadCount(0)
+            return
         }
 
         const fetchUnreadCount = async () => {
@@ -73,8 +73,8 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
         if (!isNotificationsOpen && isSignedIn) {
             const refreshCount = async () => {
                 try {
-                    const res = await fetch("/api/notifications/get", { 
-                        cache: "no-store" 
+                    const res = await fetch("/api/notifications/get", {
+                        cache: "no-store"
                     })
                     const result = await res.json()
                     const notifications = result.data || []
@@ -124,22 +124,22 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
         return () => document.removeEventListener('click', handleClickOutside)
     }, [isMenuOpen, isCategoriesOpen])
 
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/shop", label: "Shop" },
+    const navLinks = [
+        { href: "/", label: "Home" },
+        { href: "/shop", label: "Shop" },
 
-    { 
-        href: "/shop?category=Hoodies", 
-        label: "Hoodies" 
-    },
-  
-    { 
-        href: "/shop?category=Accessories", 
-        label: "Accessories" 
-    },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" }
-]
+        {
+            href: "/shop?category=Hoodies",
+            label: "Hoodies"
+        },
+
+        {
+            href: "/shop?category=Accessories",
+            label: "Accessories"
+        },
+        { href: "/about", label: "About" },
+        { href: "/contact", label: "Contact" }
+    ]
 
     return (
         <>
@@ -154,11 +154,45 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                             href="/"
                             className="flex items-center space-x-2 group flex-shrink-0"
                         >
-                            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">D</span>
+                            <div className="w-50 rounded-lg flex items-center justify-center">
+                                <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+
+                                    <rect width="400" height="150" fill="white" />
+
+
+                                    <g transform="translate(40, 35)">
+
+                                        <path d="M 30 0 L 50 15 L 50 45 L 30 60 L 10 45 L 10 15 Z"
+                                            fill="none"
+                                            stroke="black"
+                                            strokeWidth="2.5" />
+
+
+                                        <path d="M 20 15 L 20 45 L 35 45 C 42 45 45 40 45 30 C 45 20 42 15 35 15 Z"
+                                            fill="black" />
+                                    </g>
+
+
+                                    <text x="110" y="75"
+                                        fontFamily="Arial, Helvetica, sans-serif"
+                                        fontSize="42"
+                                        fontWeight="300"
+                                        letterSpacing="8"
+                                        fill="black">DESIGNER</text>
+
+                                    <text x="112" y="95"
+                                        fontFamily="Arial, Helvetica, sans-serif"
+                                        fontSize="10"
+                                        fontWeight="400"
+                                        letterSpacing="3"
+                                        fill="black">FASHION & ACCESSORIES</text>
+
+
+                                    <line x1="110" y1="105" x2="380" y2="105" stroke="black" strokeWidth="1" />
+                                </svg>
                             </div>
                             <span className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors hidden xs:block">
-                                DESIGN
+
                             </span>
                         </Link>
 
@@ -174,17 +208,17 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
                                 </Link>
                             ))}
-                            
+
                             {/* Categories Dropdown */}
                             <div className="categories-dropdown relative group">
-                                <button 
+                                <button
                                     onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
                                     className="flex items-center space-x-1 text-gray-700 hover:text-black font-medium transition-colors duration-200 text-sm xl:text-base"
                                 >
                                     <span>Categories</span>
                                     <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
                                 </button>
-                                
+
                                 {/* Dropdown Menu */}
                                 {isCategoriesOpen && (
                                     <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
@@ -208,17 +242,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                             </div>
                         </nav>
 
-                        {/* Search Bar - Desktop */}
-                        <div className="hidden md:flex items-center flex-1 max-w-xs mx-8">
-                            <div className="relative w-full">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <input
-                                    type="text"
-                                    placeholder="Search products..."
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-sm"
-                                />
-                            </div>
-                        </div>
+
 
                         {/* Right Side Actions */}
                         <div className="flex items-center space-x-3 sm:space-x-4">
@@ -280,8 +304,8 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
 
                             {/* Notification Bar */}
                             {isSignedIn && user && (
-                                <button 
-                                    onClick={() => setIsNotificationsOpen(true)} 
+                                <button
+                                    onClick={() => setIsNotificationsOpen(true)}
                                     className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
                                 >
                                     <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -359,8 +383,8 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                         {link.label}
                                     </Link>
                                 ))}
-                                
-                         
+
+
                                 {/* Mobile Auth Section */}
                                 <div className="border-t border-gray-200 pt-4 px-6 space-y-3">
                                     <SignedOut>
