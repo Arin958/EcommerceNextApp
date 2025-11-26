@@ -5,8 +5,10 @@ import { Product } from '@/schema/schema';
 import React from 'react';
 import { IProduct } from '@/types';
 import ProductDetail from '@/components/ProductDetails';
+import connectDB from '@/lib/mongodb';
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  await connectDB();
   const { id } = await params;
 
   const product = await Product.findById(id).lean<IProduct>();

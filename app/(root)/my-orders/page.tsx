@@ -5,10 +5,12 @@ import OrderCard from '@/components/orderCard';
 import { Package, Clock, CheckCircle, Truck, XCircle } from 'lucide-react';
 import { IOrder } from '@/types';
 import Link from 'next/link';
+import connectDB from '@/lib/mongodb';
 
 
 
 const Page = async () => {
+  await connectDB()
   const { userId } = await auth();
 
   if (!userId) return null;

@@ -16,8 +16,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import connectDB from '@/lib/mongodb';
 
 const Page = async({ params }: { params: { id: string }}) => {
+    await connectDB()
     const { id } = params
 
     const orders = await Order.findById(id).lean<IOrder>();
