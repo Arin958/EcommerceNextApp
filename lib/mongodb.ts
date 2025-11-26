@@ -1,27 +1,22 @@
 import mongoose from "mongoose";
 import configEnv from "./config";
 
+let isConnected = false; // <-- cache
+
 const connectDB = async () => {
-  console.log("🟡 Connecting to MongoDB...");
+  if (isConnected) {
+    // Already connected, skip reconnection
+    return;
+  }
 
   try {
-    console.log("Mongo URI:", configEnv.env.mongodb.uri);
+    console.log("🟡 Connecting to MongoDB...");
 
-    await mongoose.connect(configEnv.env.mongodb.uri);
+    const db = await mongoose.connect(configEnv.env.mongodb.uri);
 
-    console.log("🔵 Connection ReadyState:", mongoose.connection.readyState);
-    
-    mongoose.connection.on("connected", () => {
-      console.log("✅ Mongoose connected successfully");
-    });
+    isConnected = db.connections[0].readyState === 1;
 
-    mongoose.connection.on("error", (err) => {
-      console.error("❌ Mongoose Error:", err);
-    });
-
-    mongoose.connection.on("disconnected", () => {
-      console.log("⚠️ Mongoose disconnected");
-    });
+    console.log("🔵 MongoDB Connected:", isConnected);
 
   } catch (error) {
     console.error("❗Error connecting to MongoDB:", error);

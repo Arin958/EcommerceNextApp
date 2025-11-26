@@ -2,6 +2,7 @@ import FilterSidebar from "@/components/FilterSidebar";
 import ProductList from "@/components/ProductList";
 import AdvancedSearchBar from "@/components/SearchBar";
 import SortDropdown from "@/components/SortBy";
+import connectDB from "@/lib/mongodb";
 import { Product } from "@/schema/schema";
 import { IProduct } from "@/types";
 import { FilterQuery } from "mongoose";
@@ -22,6 +23,7 @@ interface ShopPageProps {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
 
+await connectDB();
     // ✅ Await searchParams
     const params = await searchParams;
 
