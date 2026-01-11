@@ -32,7 +32,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
 
 
   return (
-    <main className='root-container'>
+    <main className='root-container font-mono'>
 
       <MergeCartOnLogin />
       <div className='mx-auto px-10 '>

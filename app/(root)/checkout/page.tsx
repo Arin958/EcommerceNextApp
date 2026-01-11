@@ -137,20 +137,15 @@ export default function SimpleCheckout() {
   const handlePayPalSuccess = async (paypalData: PayPalPaymentDetails) => {
     setIsSubmitting(true);
 
-    const transactionId = paypalData.purchase_units?.[0]?.payments?.captures?.[0]?.id;
 
-if (!transactionId) {
-  alert("Failed to get transaction ID from PayPal");
-  setIsSubmitting(false);
-  return;
-}
 
     try {
       const orderData = {
         shippingAddress: formData,
         paymentMethod: "paypal",
         paypalOrderId: paypalData.id,
-        transactionId,
+        transactionId: paypalData.transactionId,
+  
       };
 
       const response = await fetch("/api/order/create", {
@@ -164,6 +159,7 @@ if (!transactionId) {
       if (response.ok) {
         router.push(`/thank-you?orderId=${result.order._id}`);
       } else {
+        console.error(result, "result")
         alert(result.message || "Failed to place order");
       }
     } catch (error) {
@@ -413,8 +409,15 @@ if (!transactionId) {
                 {paymentMethod === "paypal" && (
                   <div className="p-4 bg-gray-50 rounded-lg border">
                     <PayPalButton
-                      amount={orderTotal}
-                      onSuccess={handlePayPalSuccess}
+                      onSuccess={(details) => {
+                        // If transactionId is missing, you may need to extract it here or handle accordingly
+                        if (!("transactionId" in details)) {
+                          alert("Payment details missing transactionId.");
+                          return;
+                        }
+                        // Call the async handler, but don't return the promise
+                        handlePayPalSuccess(details as PayPalPaymentDetails);
+                      }}
                       onError={handlePayPalError}
                     />
                   </div>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 interface PayPalButtonProps {
-  amount: number;
+
   onSuccess: (details: PayPalPaymentDetails) => void;
   onError: (error: Error) => void;
 }
@@ -44,67 +44,66 @@ interface PayPalPaymentDetails {
   }>;
 }
 
-export default function PayPalButton({ amount, onSuccess, onError }: PayPalButtonProps) {
+export default function PayPalButton({ onSuccess, onError }: PayPalButtonProps) {
   const [{ isPending }] = usePayPalScriptReducer();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // ✅ PayPal CREATE (reserves stock)
   const createOrder = async (): Promise<string> => {
-    try {
-      const response = await fetch("/api/order/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: amount.toFixed(2),
-        }),
-      });
+    const res = await fetch("/api/payment-order/paypal/create-order", {
+      method: "POST",
+    });
 
-      const orderData = await response.json();
+    const data = await res.json();
+    console.log(data, "data")
 
-      if (!response.ok) {
-        throw new Error(orderData.message || "Failed to create order");
-      }
-
-      return orderData.id;
-    } catch (error) {
-      console.error("Create order error:", error);
-      throw error;
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to create PayPal order");
     }
+
+    return data.id; // PayPal order id
   };
 
-  const handleError =(error: unknown) => {
-    console.error("PayPal Error:", error);
-    toast.error("Payment failed. Please try again.");
-  };
-
+  // ✅ PayPal CAPTURE (finalizes stock)
   const onApprove = async (data: { orderID: string }) => {
     try {
       setIsProcessing(true);
-      
-      const response = await fetch("/api/order/capture-order", {
+
+      const res = await fetch("/api/payment-order/paypal/capture-order", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderID: data.orderID,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: data.orderID}),
       });
 
-      const captureData = await response.json();
+      const result = await res.json();
 
-      if (!response.ok) {
-        throw new Error(captureData.message || "Failed to capture payment");
+      console.log(result, "result")
+
+      if (!res.ok) {
+       console.error(result, "result")
+        throw new Error(result.message || "Capture failed");
       }
 
-      onSuccess(captureData);
-    } catch (error) {
-      console.error("Capture order error:", error);
-      onError(error as Error);
+      onSuccess(result);
+    } catch (err) {
+      console.error("PayPal capture error:", err);
+      onError(err as Error);
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // 🔓 Layer-1: RELEASE stock if user cancels
+  const onCancel = async () => {
+    await fetch("/api/payment-order/paypal/cancel-order", { method: "POST" });
+    toast.info("Payment cancelled");
+  };
+
+  // 🔓 Layer-1: RELEASE stock if error happens
+  const onPayPalError = async (err: unknown) => {
+    console.error("PayPal error:", err);
+    await fetch("/api/payment-order/paypal/cancel-order", { method: "POST" });
+    toast.error("Payment failed. Stock released.");
   };
 
   if (isPending || isProcessing) {
@@ -117,15 +116,12 @@ export default function PayPalButton({ amount, onSuccess, onError }: PayPalButto
   }
 
   return (
-    <PayPalButtons
-      style={{ 
-        layout: "vertical",
-        shape: "rect",
-        color: "blue"
-      }}
+      <PayPalButtons
+      style={{ layout: "vertical", color: "blue" }}
       createOrder={createOrder}
       onApprove={onApprove}
-      onError={handleError}
+      onCancel={onCancel}
+      onError={onPayPalError}
     />
   );
 }

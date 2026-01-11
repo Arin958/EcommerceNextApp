@@ -36,6 +36,10 @@ const ProductSchema: Schema = new Schema<IProduct>(
         color: String,
         size: String,
         stock: Number,
+        reservedStock: {
+          type: Number,
+          default: 0
+        }
       },
     ],
 

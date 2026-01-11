@@ -134,6 +134,7 @@ type PayPalCapture = {
 
 interface PayPalPaymentDetails {
   id?: string;
+  transactionId: string;
   status?: string;
   payer?: {
     name?: {

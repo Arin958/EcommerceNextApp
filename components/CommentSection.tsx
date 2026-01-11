@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
+import { Loader2, Star, MessageSquare, ThumbsUp, ThumbsDown, Filter, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 import { ReviewForm } from "./ReviewForm";
@@ -182,100 +182,217 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ productId, initialReviews
   };
 
   return (
-    <Card className="mt-10 shadow-lg rounded-xl">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">Customer Reviews</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-8">
-        {/* Rating Summary */}
-        <RatingSummary
-          averageRating={averageRating}
-          totalReviews={totalReviews}
-          ratingDistribution={ratingDistribution}
-        />
+    <div className="bg-gradient-to-b from-white to-gray-50 min-h-screen py-8">
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Header with subtle accent */}
+        <div className="mb-8 text-center relative">
+          <h1 className="text-4xl font-black font-bebas bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-black to-gray-900 inline-block relative px-8 bg-white">
+            CUSTOMER REVIEWS
+          </h1>
+        </div>
 
-        {/* Review Filters */}
-        <ReviewFilters
-          activeFilter={activeFilter}
-          onFilterChange={handleFilterChange}
-          totalReviews={totalReviews}
-          ratingDistribution={ratingDistribution}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Stats & Filters */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Summary Card */}
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+              <CardHeader className="bg-gradient-to-r from-gray-50 to-white border-b-2 border-black">
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5 fill-current text-black" />
+                  <span className="font-black text-xl">RATING OVERVIEW</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <RatingSummary
+                  averageRating={averageRating}
+                  totalReviews={totalReviews}
+                  ratingDistribution={ratingDistribution}
+                />
+                
+                {/* Visual Rating Distribution */}
+                <div className="mt-6 space-y-2">
+                  {[5, 4, 3, 2, 1].map((rating) => (
+                    <div key={rating} className="flex items-center gap-2 group cursor-pointer">
+                      <div className="flex items-center gap-1 min-w-[60px]">
+                        <span className="font-bold text-sm">{rating}</span>
+                        <Star className="w-3 h-3 fill-current text-black" />
+                      </div>
+                      <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-black transition-all duration-300 group-hover:bg-gray-800"
+                          style={{ width: `${(ratingDistribution[rating as keyof typeof ratingDistribution] / (totalReviews || 1)) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-xs font-bold min-w-[30px]">
+                        {ratingDistribution[rating as keyof typeof ratingDistribution]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
-        <Separator />
-
-        {/* Review Form */}
-        <ReviewForm
-          productId={productId}
-          onSubmitSuccess={() => fetchReviews(1, activeFilter)}
-        />
-
-        {/* Existing Reviews */}
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">
-              Customer Reviews ({reviews.length} of {totalReviews})
-            </h3>
+            {/* Filters Card */}
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <CardHeader className="bg-gradient-to-r from-gray-50 to-white border-b-2 border-black">
+                <CardTitle className="flex items-center gap-2">
+                  <Filter className="w-5 h-5" />
+                  <span className="font-black text-xl">FILTER REVIEWS</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <ReviewFilters
+                  activeFilter={activeFilter}
+                  onFilterChange={handleFilterChange}
+                  totalReviews={totalReviews}
+                  ratingDistribution={ratingDistribution}
+                />
+              </CardContent>
+            </Card>
           </div>
 
-          {isLoadingReviews ? (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-            </div>
-          ) : reviews.length > 0 ? (
-            <>
-              {reviews.map((review) => (
-                <ReviewItem
-                  key={review._id}
-                  review={review}
-                  onLike={handleLike}
-                  onDislike={handleDislike}
-                  getInitials={getInitials}
-                  getTimeAgo={getTimeAgo}
-                  onReplySuccess={() => fetchReviews(pagination.page, activeFilter)}
-                  onDeleteSuccess={() => fetchReviews()}
+          {/* Right Column - Reviews & Form */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Review Form Card */}
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
+              <CardHeader className="bg-gradient-to-r from-gray-50 to-white border-b-2 border-black">
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5" />
+                  <span className="font-black text-xl">WRITE A REVIEW</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <ReviewForm
+                  productId={productId}
+                  onSubmitSuccess={() => fetchReviews(1, activeFilter)}
                 />
-              ))}
+              </CardContent>
+            </Card>
 
-              {/* Load More Button */}
-              {pagination.hasNext && (
-                <div className="flex justify-center pt-4">
-                  <Button
-                    onClick={handleLoadMore}
-                    variant="outline"
-                    disabled={isLoadingReviews}
-                  >
-                    {isLoadingReviews ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : null}
-                    Load More Reviews
-                  </Button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center py-12 border rounded-lg">
-              <div className="text-muted-foreground mb-4">
-                {activeFilter === "all" ? (
-                  <>No reviews yet. Be the first to review this product!</>
+            {/* Reviews List Card */}
+            <Card className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <CardHeader className="bg-gradient-to-r from-gray-50 to-white border-b-2 border-black">
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    <span className="font-black text-xl">
+                      CUSTOMER FEEDBACK
+                      <span className="ml-2 text-sm font-normal text-gray-600">
+                        ({reviews.length} of {totalReviews})
+                      </span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <ThumbsUp className="w-4 h-4" />
+                    <ThumbsDown className="w-4 h-4" />
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                {/* Loading State */}
+                {isLoadingReviews ? (
+                  <div className="flex flex-col items-center justify-center py-16 space-y-4">
+                    <div className="relative">
+                      <div className="w-16 h-16 border-4 border-gray-200 rounded-full"></div>
+                      <div className="absolute top-0 left-0 w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                    <p className="text-gray-600 font-medium">Loading authentic reviews...</p>
+                  </div>
+                ) : reviews.length > 0 ? (
+                  <>
+                    {/* Reviews Grid */}
+                    <div className="space-y-6">
+                      {reviews.map((review) => (
+                        <div key={review._id} className="group">
+                          <ReviewItem
+                            review={review}
+                            onLike={handleLike}
+                            onDislike={handleDislike}
+                            getInitials={getInitials}
+                            getTimeAgo={getTimeAgo}
+                            onReplySuccess={() => fetchReviews(pagination.page, activeFilter)}
+                            onDeleteSuccess={() => fetchReviews()}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Load More */}
+                    {pagination.hasNext && (
+                      <div className="mt-8 pt-6 border-t-2 border-dashed border-gray-300">
+                        <Button
+                          onClick={handleLoadMore}
+                          className="w-full py-6 border-2 border-black bg-white hover:bg-black hover:text-white transition-all duration-200 font-bold group"
+                          disabled={isLoadingReviews}
+                        >
+                          {isLoadingReviews ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                              Loading...
+                            </>
+                          ) : (
+                            <>
+                              LOAD MORE REVIEWS
+                              <ChevronDown className="ml-2 w-4 h-4 group-hover:translate-y-1 transition-transform" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 ) : (
-                  <>No {activeFilter} star reviews yet.</>
+                  /* Empty State */
+                  <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg">
+                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                      <MessageSquare className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-black mb-2">No Reviews Yet</h3>
+                    <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                      {activeFilter === "all" 
+                        ? "Be the first to share your experience with this product!"
+                        : `No ${activeFilter} star reviews yet.`}
+                    </p>
+                    {activeFilter !== "all" && (
+                      <Button
+                        variant="outline"
+                        onClick={() => handleFilterChange("all")}
+                        className="border-2 border-black hover:bg-black hover:text-white font-bold"
+                      >
+                        VIEW ALL REVIEWS
+                      </Button>
+                    )}
+                  </div>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Stats Footer */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-white border-2 border-black p-4 text-center hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                <div className="text-2xl font-black">{totalReviews}</div>
+                <div className="text-xs text-gray-600 font-bold">TOTAL REVIEWS</div>
               </div>
-              {activeFilter !== "all" && (
-                <Button
-                  variant="outline"
-                  onClick={() => handleFilterChange("all")}
-                >
-                  View All Reviews
-                </Button>
-              )}
+              <div className="bg-white border-2 border-black p-4 text-center hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                <div className="text-2xl font-black">{averageRating.toFixed(1)}</div>
+                <div className="text-xs text-gray-600 font-bold">AVG RATING</div>
+              </div>
+              <div className="bg-white border-2 border-black p-4 text-center hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                <div className="text-2xl font-black">{reviews.length}</div>
+                <div className="text-xs text-gray-600 font-bold">DISPLAYED</div>
+              </div>
+              <div className="bg-white border-2 border-black p-4 text-center hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                <div className="text-2xl font-black">{pagination.totalPages}</div>
+                <div className="text-xs text-gray-600 font-bold">PAGES</div>
+              </div>
             </div>
-          )}
+          </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Designer Signature (for recruiter) */}
+  
+      </div>
+    </div>
   );
 };
 
-export default ReviewSection;
+export default ReviewSection

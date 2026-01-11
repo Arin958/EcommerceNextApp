@@ -1,15 +1,25 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-   experimental: {
+  experimental: {
     serverActions: {
-      bodySizeLimit: '20mb',
+      bodySizeLimit: "20mb",
     },
   },
-  /* config options here */
-  images: {
-    domains: ["picsum.photos",'res.cloudinary.com'],
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

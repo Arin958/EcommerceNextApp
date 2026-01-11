@@ -11,6 +11,7 @@ interface Props {
 }
 
 const ProductList: React.FC<Props> = ({ product, title, subtitle }) => {
+  if(!product.length) return ;
   return (
     <section className="space-y-6 mt-10">
       {/* Section Title */}

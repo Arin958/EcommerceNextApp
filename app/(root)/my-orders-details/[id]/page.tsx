@@ -20,7 +20,7 @@ import connectDB from '@/lib/mongodb';
 
 const Page = async({ params }: { params: { id: string }}) => {
     await connectDB()
-    const { id } = params
+    const { id } = await params
 
     const orders = await Order.findById(id).lean<IOrder>();
     const orderData = orders ? JSON.parse(JSON.stringify(orders)) : null;

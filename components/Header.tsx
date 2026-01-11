@@ -137,7 +137,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
             href: "/shop?category=Accessories",
             label: "Accessories"
         },
-        { href: "/about", label: "About" },
+        
         { href: "/contact", label: "Contact" }
     ]
 

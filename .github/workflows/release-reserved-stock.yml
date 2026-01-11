@@ -1,0 +1,16 @@
+name: Release Reserved Stock Cron
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # every 5 minutes
+  workflow_dispatch:        # allows manual run
+
+jobs:
+  release-stock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call release-reserved-stock API
+        run: |
+          curl -X GET https://ecommerce-next-app-rab7.vercel.app/api/cron/release-reserved-stock \
+          -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"

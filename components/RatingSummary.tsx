@@ -23,10 +23,10 @@ export const RatingSummary: React.FC<RatingSummaryProps> = ({
     <div className="grid md:grid-cols-2 gap-8">
       {/* Overall Rating */}
       <div className="text-center p-6 border rounded-lg">
-        <div className="text-5xl font-bold text-blue-600 mb-2">
+        <div className="text-2xl font-bold text-blue-600 mb-2">
           {averageRating.toFixed(1)}
         </div>
-        <StarRating rating={Math.round(averageRating)} readonly size={24} />
+        <StarRating rating={Math.round(averageRating)} readonly size={12} />
         <div className="text-sm text-muted-foreground mt-2">
           Based on {totalReviews} reviews
         </div>
