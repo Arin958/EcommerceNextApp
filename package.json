@@ -10,7 +10,7 @@
     "seed": "npx tsx lib/seed.ts"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.33.3",
+    "@clerk/nextjs": "^6.36.7",
     "@paypal/paypal-server-sdk": "^1.1.0",
     "@paypal/react-paypal-js": "^8.9.2",
     "@radix-ui/react-alert-dialog": "^1.1.15",
