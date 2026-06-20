@@ -13,7 +13,7 @@ interface Props {
 const ProductList: React.FC<Props> = ({ product, title, subtitle }) => {
   if(!product.length) return ;
   return (
-    <section className="space-y-6 mt-10">
+    <section className="space-y-6 mt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
       {/* Section Title */}
       <div className="text-center mb-10">
         <h2 className="font-bebas text-3xl sm:text-2xl md:text-5xl tracking-wide">
