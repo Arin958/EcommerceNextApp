@@ -152,7 +152,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                         {/* Logo */}
                         <Link
                             href="/"
-                            className="flex items-center space-x-2 group flex-shrink-0"
+                            className="flex items-center space-x-2 group shrink-0"
                         >
                             <div className="w-20 lg:w-50 rounded-lg flex items-center justify-center">
                                 <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
