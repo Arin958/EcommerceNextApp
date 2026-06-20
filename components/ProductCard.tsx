@@ -40,7 +40,7 @@ const isLowStock = (product.stock ?? 0) < 20;
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
 
           {hasDiscount && (
-            <Badge className="bg-black hover:bg-red-600 text-white border-0 shadow-lg text-sm font-bold">
+            <Badge className="bg-black hover:bg-red-600 text-white border-0 shadow-lg text-xs sm:text-sm font-bold">
               -{discountPercentage}%
             </Badge>
           )}
@@ -50,15 +50,15 @@ const isLowStock = (product.stock ?? 0) < 20;
         <Button
           variant="ghost"
           size="icon"
-          className={`absolute top-3 right-3 z-10 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white transition-all duration-300 ${isWishlisted ? "text-red-500" : "text-gray-600"
+          className={`absolute top-3 right-3 z-10 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white transition-all duration-300 ${isWishlisted ? "text-red-500" : "text-gray-600"
             }`}
           onClick={() => setIsWishlisted(!isWishlisted)}
         >
-          <Heart className={`h-4 w-4 ${isWishlisted ? "fill-current" : ""}`} />
+          <Heart className={`h-3 w-3 sm:h-4 sm:w-4 ${isWishlisted ? "fill-current" : ""}`} />
         </Button>
 
         {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="relative aspect-square overflow-hidden bg-linear-to-br from-gray-50 to-gray-100">
           <Link href={`/products/${product._id}`}>
             <Image
               src={imageUrl}
@@ -70,9 +70,9 @@ const isLowStock = (product.stock ?? 0) < 20;
             />
           </Link>
 
-          {/* Image Thumbnails for variants */}
+          {/* Image Thumbnails for variants - HIDE ON MOBILE */}
           {product.images && product.images.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden sm:flex">
               {product.images.slice(0, 3).map((image, index) => (
                 <button
                   key={index}
@@ -87,8 +87,8 @@ const isLowStock = (product.stock ?? 0) < 20;
             </div>
           )}
 
-          {/* Quick View Overlay */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          {/* Quick View Overlay - HIDE ON MOBILE */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:flex items-center justify-center">
             <Link href={`/products/${product._id}`}>
 
               <Tooltip>
@@ -110,7 +110,7 @@ const isLowStock = (product.stock ?? 0) < 20;
 
           {/* Stock Indicator */}
    {isLowStock && (product.stock ?? 0) > 0 && (
-  <div className="absolute top-3 left-1/2 transform -translate-x-1/2">
+  <div className="absolute top-3 left-1/2 transform -translate-x-1/2 hidden sm:block">
     <Badge variant="destructive" className="text-xs animate-pulse">
       ⚠️ Only {product.stock ?? 0} left!
     </Badge>
@@ -120,20 +120,20 @@ const isLowStock = (product.stock ?? 0) < 20;
         </div>
 
         {/* Product Info */}
-        <CardContent className="p-4 space-y-3">
+        <CardContent className="p-3 sm:p-4 space-y-2 sm:space-y-3">
           {/* Brand */}
           <div className="flex items-center justify-between">
-            <Badge variant="outline" className="text-xs font-medium text-gray-600">
+            <Badge variant="outline" className="text-[10px] sm:text-xs font-medium text-gray-600">
               {product.brand}
             </Badge>
             {product.isFeatured && (
-              <Zap className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+              <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-500 fill-yellow-500" />
             )}
           </div>
 
           {/* Product Name */}
           <Link href={`/products/${product._id}`}>
-            <h3 className="font-semibold text-gray-900 line-clamp-2 leading-tight hover:text-blue-600 transition-colors text-sm min-h-[2.5rem]">
+            <h3 className="font-semibold text-gray-900 line-clamp-2 leading-tight hover:text-blue-600 transition-colors text-xs sm:text-sm min-h-8 sm:min-h-10">
               {product.name}
             </h3>
           </Link>
@@ -145,28 +145,28 @@ const isLowStock = (product.stock ?? 0) < 20;
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className={`h-3 w-3 ${star <= Math.floor(product.averageRating || 0)
+                    className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${star <= Math.floor(product.averageRating || 0)
                         ? "text-yellow-500 fill-yellow-500"
                         : "text-gray-300"
                       }`}
                   />
                 ))}
               </div>
-              <span className="text-xs font-medium text-gray-700">
+              <span className="text-[10px] sm:text-xs font-medium text-gray-700">
                 {product.averageRating?.toFixed(1)}
               </span>
             </div>
-            <span className="text-xs text-gray-500">({product.totalReviews})</span>
+            <span className="text-[10px] sm:text-xs text-gray-500">({product.totalReviews})</span>
           </div>
 
           {/* Price Section */}
           <div className="flex items-center justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-gray-900">
+            <div className="flex items-baseline gap-1 sm:gap-2">
+              <span className="text-base sm:text-xl font-bold text-gray-900">
                 ${product.discountPrice || product.price}
               </span>
               {hasDiscount && (
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-[10px] sm:text-sm text-gray-500 line-through">
                   ${product.price}
                 </span>
               )}
@@ -174,12 +174,12 @@ const isLowStock = (product.stock ?? 0) < 20;
 
             {/* Sold Count */}
             {(product.sold ?? 0) > 0 && (
-  <span className="text-xs text-gray-500">{product.sold ?? 0}+ sold</span>
+  <span className="text-[10px] sm:text-xs text-gray-500">{product.sold ?? 0}+ sold</span>
 )}
           </div>
 
-          {/* Features */}
-          <div className="flex items-center justify-between text-xs text-gray-600">
+          {/* Features - HIDE ON MOBILE */}
+          <div className="hidden sm:flex items-center justify-between text-xs text-gray-600">
             <div className="flex items-center gap-1">
               <Truck className="h-3 w-3" />
               <span>Free Shipping</span>
@@ -190,9 +190,9 @@ const isLowStock = (product.stock ?? 0) < 20;
             </div>
           </div>
 
-          {/* Variants Preview */}
+          {/* Variants Preview - HIDE ON MOBILE */}
           {product.variants && product.variants.length > 0 && (
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
               <span className="text-xs text-gray-600">Colors:</span>
               <div className="flex gap-1">
                 {product.variants.slice(0, 3).map((variant) => (
@@ -220,7 +220,7 @@ const isLowStock = (product.stock ?? 0) < 20;
 
           {/* Add to Cart Button */}
 <Link href={`/products/${product._id}`}>
-<Button className="w-full cursor-pointer">View Details</Button>
+<Button className="w-full cursor-pointer text-xs sm:text-sm py-1.5 sm:py-2 h-auto sm:h-10">View Details</Button>
 </Link>
         </CardContent>
       </Card>

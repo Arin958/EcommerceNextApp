@@ -16,7 +16,7 @@ const ProductList: React.FC<Props> = ({ product, title, subtitle }) => {
     <section className="space-y-6 mt-10">
       {/* Section Title */}
       <div className="text-center mb-10">
-        <h2 className="font-bebas text-3xl sm:text-4xl md:text-5xl tracking-wide">
+        <h2 className="font-bebas text-3xl sm:text-2xl md:text-5xl tracking-wide">
           {title}
         </h2>
         {subtitle && (
