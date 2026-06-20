@@ -154,7 +154,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                             href="/"
                             className="flex items-center space-x-2 group flex-shrink-0"
                         >
-                            <div className="w-50 rounded-lg flex items-center justify-center">
+                            <div className="w-20 lg:w-50 rounded-lg flex items-center justify-center">
                                 <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
 
                                     <rect width="400" height="150" fill="white" />
