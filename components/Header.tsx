@@ -265,7 +265,7 @@ const Header = ({ adminUser }: { adminUser: UserType | null }) => {
                                     <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                                         <div className="py-2">
                                             <Link
-                                                href="/my-profile"
+                                                href="/"
                                                 className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                                             >
                                                 <User className="w-4 h-4 mr-3" />

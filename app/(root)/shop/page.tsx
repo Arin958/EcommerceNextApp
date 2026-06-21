@@ -113,8 +113,8 @@ export default async function ShopPage({
         createdAt: -1,
       });
   }
+  console.time("products");
 
-  // Run all database queries in parallel
   const [
     shoppingProducts,
     categories,
@@ -128,6 +128,8 @@ export default async function ShopPage({
     Product.distinct("variants.size"),
     Product.distinct("collections"),
   ]);
+
+  console.timeEnd("products");
 
   const products = JSON.parse(
     JSON.stringify(shoppingProducts)
