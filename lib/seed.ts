@@ -1,5 +1,5 @@
 
-import { Product } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
 import mongoose from "mongoose";
 import dummyProducts from "../dummyData.json"
 import { config } from "dotenv"

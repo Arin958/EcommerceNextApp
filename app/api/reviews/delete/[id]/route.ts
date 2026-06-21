@@ -1,5 +1,6 @@
 import connectDB from "@/lib/mongodb";
-import { Review, User } from "@/schema/schema";
+import { Review } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -30,8 +31,7 @@ export async function DELETE(
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
-
-    // 🛡️ Authorization check
+    
     if (review.user._id !== user._id.toString() && user.role !== "admin") {
       return NextResponse.json({ message: "You are not authorized" }, { status: 401 });
     }

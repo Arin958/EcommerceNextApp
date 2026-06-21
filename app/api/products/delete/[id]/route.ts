@@ -1,15 +1,16 @@
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import connectDB from "@/lib/mongodb";
-import { Product, User } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
+import { User } from "@/schema/UserSchema";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> } // 👈 UPDATED TYPE
+  context: { params: Promise<{ id: string }> } 
 ) {
   try {
-    // ✅ Await params (new in Next.js 15+)
+ 
     const { id } = await context.params;
 
     // 🧩 Connect to MongoDB

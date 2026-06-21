@@ -1,6 +1,7 @@
 import { uploadMultipleToCloudinary, uploadToCloudinary, deleteMultipleFromCloudinary } from "@/lib/cloudinary";
 import connectDB from "@/lib/mongodb";
-import { Product, User } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
+import { User } from "@/schema/UserSchema";
 import { IProduct } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";

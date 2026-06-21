@@ -1,6 +1,7 @@
-// api/reviews/get/[id]/replies/route.ts
+
 import connectDB from "@/lib/mongodb";
-import { Review, User } from "@/schema/schema";
+import { Review } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
 import { IReviewReply } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";

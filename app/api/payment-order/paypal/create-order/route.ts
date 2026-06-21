@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { Cart, Product } from "@/schema/schema";
+import { Cart } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
 import connectDB from "@/lib/mongodb";
 import configEnv from "@/lib/config";
 import { ICartItem } from "@/types";
@@ -67,7 +68,6 @@ export async function POST() {
             0
         );
 
-        const shipping = 0;
         const tax = subtotal * 0.1;
         const total = subtotal + tax;
 

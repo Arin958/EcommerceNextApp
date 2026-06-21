@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { uploadMultipleToCloudinary, uploadToCloudinary } from '@/lib/cloudinary';
 import slugify from 'slugify';
 import connectDB from '@/lib/mongodb';
-import { Product, User } from '@/schema/schema';
+import {Product} from "@/schema/ProductSchema";
+import {User} from "@/schema/UserSchema";
 import { auth } from '@clerk/nextjs/server';
 
 

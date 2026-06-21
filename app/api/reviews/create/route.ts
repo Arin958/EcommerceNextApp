@@ -1,5 +1,7 @@
 import connectDB from "@/lib/mongodb";
-import { Notification, Review, User, Product } from "@/schema/schema"; // ✅ include Product
+import { Notification, Review, } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
+import { User } from "@/schema/UserSchema"; 
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 

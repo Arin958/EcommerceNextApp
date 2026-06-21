@@ -1,5 +1,6 @@
 import connectDB from "@/lib/mongodb";
-import { Review, User } from "@/schema/schema";
+import { Review } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse, NextRequest } from "next/server";
 

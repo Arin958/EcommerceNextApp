@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { Product } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
+
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

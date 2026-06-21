@@ -1,5 +1,5 @@
-// app/admin/products/edit/[id]/page.tsx
-import { Product } from '@/schema/schema'
+
+import { Product } from '@/schema/ProductSchema'
 
 
 import { notFound } from 'next/navigation'

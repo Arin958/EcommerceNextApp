@@ -1,5 +1,7 @@
 import connectDB from "@/lib/mongodb";
-import { Order, Product, Review, User } from "@/schema/schema";
+import { Order, Review } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
+import { Product } from "@/schema/ProductSchema";
 import { auth } from "@clerk/nextjs/server";
 
 import {NextResponse } from "next/server";
@@ -30,7 +32,6 @@ export async function GET() {
         const today = new Date();
 
         const startOfToday = new Date(today.setHours(0, 0, 0, 0));
-        const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
 

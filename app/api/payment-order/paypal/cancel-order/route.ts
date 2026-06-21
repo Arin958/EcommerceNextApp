@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import connectDB from "@/lib/mongodb";
-import { Cart, Product } from "@/schema/schema";
+import { Cart } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
 import mongoose from "mongoose";
 
 
