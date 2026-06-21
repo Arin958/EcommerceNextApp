@@ -7,7 +7,13 @@ import connectDB from '@/lib/mongodb';
 import ProductList from '@/components/ProductList';
 import BreadCrumb from '@/components/BreadCrumb';
 
-const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
+interface ProductPageProps {
+  params: Promise<{
+    id: string
+  }>
+}
+
+const Page = async ({ params }: ProductPageProps) => {
   await connectDB();
   const { id } = await params;
   console.log(id)

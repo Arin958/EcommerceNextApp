@@ -1,27 +1,30 @@
 
-import { Product } from '@/schema/ProductSchema'
+import { Product } from '@/schema/schema'
 
 
-import { notFound } from 'next/navigation'
+
 import { EditProductForm } from '@/components/admin/EditProductForm'
 
 interface EditProductPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export default async function EditProductPage({ params }: EditProductPageProps) {
+export default async function EditProductPage({
+  params,
+}: EditProductPageProps) {
+  const { id } = await params;
 
+  const product = await Product.findById(id).lean();
 
-  const product = await Product.findById(params.id).lean()
-  const serializedProduct = product ? JSON.parse(JSON.stringify(product)) : null
+  console.log(product, "product");
 
   if (!product) {
-    notFound()
+    return <div>Product not found</div>;
   }
 
-  // Convert to plain object and handle _id
+  const serializedProduct = JSON.parse(JSON.stringify(product));
 
   return (
     <div className="container mx-auto py-6">
@@ -31,8 +34,8 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
           Update product information and settings
         </p>
       </div>
-      
+
       <EditProductForm product={serializedProduct} />
     </div>
-  )
+  );
 }
