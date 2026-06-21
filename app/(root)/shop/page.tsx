@@ -8,86 +8,160 @@ import { IProduct } from "@/types";
 import { FilterQuery } from "mongoose";
 
 interface ShopPageProps {
-    searchParams: Promise<{
-        sort?: string;
-        category?: string;
-        minPrice?: string;
-        maxPrice?: string;
-        color?: string;
-        size?: string;
-        search?: string;
-        minRating?: string;
-        collections?: string;
-    }>;
+  searchParams: Promise<{
+    sort?: string;
+    category?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    color?: string;
+    size?: string;
+    search?: string;
+    minRating?: string;
+    collections?: string;
+  }>;
 }
 
-export default async function ShopPage({ searchParams }: ShopPageProps) {
+export default async function ShopPage({
+  searchParams,
+}: ShopPageProps) {
+  await connectDB();
 
-await connectDB();
-    // ✅ Await searchParams
-    const params = await searchParams;
+  const params = await searchParams;
 
-const query: FilterQuery<IProduct> = {};
+  const query: FilterQuery<IProduct> = {};
 
-    if (params.category) query.category = params.category;
-    if (params.color) query['variants.color'] = params.color;
-    if (params.size) query['variants.size'] = params.size;
-    if (params.collections) query.collections = params.collections;
+  // Category
+  if (params.category) {
+    query.category = params.category;
+  }
 
-    if (params.minPrice || params.maxPrice) {
-        query.price = {};
-        if (params.minPrice) query.price.$gte = Number(params.minPrice);
-        if (params.maxPrice) query.price.$lte = Number(params.maxPrice);
+  // Variant filters
+  if (params.color) {
+    query["variants.color"] = params.color;
+  }
+
+  if (params.size) {
+    query["variants.size"] = params.size;
+  }
+
+  // Collection
+  if (params.collections) {
+    query.collections = params.collections;
+  }
+
+  // Price range
+  if (params.minPrice || params.maxPrice) {
+    query.price = {};
+
+    if (params.minPrice) {
+      query.price.$gte = Number(params.minPrice);
     }
 
-    if (params.search) {
-        query.$or = [
-            { name: { $regex: params.search, $options: "i" } },
-            { tags: { $regex: params.search, $options: "i" } },
-        ];
+    if (params.maxPrice) {
+      query.price.$lte = Number(params.maxPrice);
     }
+  }
 
-    let productsQuery = Product.find(query).lean<IProduct[]>();
+  // Search
+  if (params.search?.trim()) {
+    query.$or = [
+      {
+        name: {
+          $regex: params.search,
+          $options: "i",
+        },
+      },
+      {
+        tags: {
+          $regex: params.search,
+          $options: "i",
+        },
+      },
+    ];
+  }
 
-    if (params.sort) {
-        switch (params.sort) {
-            case "bestseller":
-                productsQuery = productsQuery.sort({ sold: -1 });
-                break;
-            case "new":
-                productsQuery = productsQuery.sort({ createdAt: -1 });
-                break;
-            case "trending":
-                productsQuery = productsQuery.sort({ averageRating: -1, sold: -1 });
-                break;
-            case "price_high":
-                productsQuery = productsQuery.sort({ price: -1 });
-                break;
-            case "price_low":
-                productsQuery = productsQuery.sort({ price: 1 });
-                break;
-            default:
-                productsQuery = productsQuery.sort({ createdAt: -1 });
-        }
-    }
+  // Base query
+  let productsQuery = Product.find(query).lean<IProduct[]>();
 
-    const categories = await Product.distinct("category");
-    const colors = await Product.distinct("variants.color");
-    const sizes = await Product.distinct("variants.size");
-    const collections = await Product.distinct("collections");
+  // Sorting
+  switch (params.sort) {
+    case "bestseller":
+      productsQuery = productsQuery.sort({ sold: -1 });
+      break;
 
-    const shoppingProducts = await productsQuery.exec();
-    const products = shoppingProducts.map((product) => JSON.parse(JSON.stringify(product)));
+    case "new":
+      productsQuery = productsQuery.sort({ createdAt: -1 });
+      break;
 
-    return (
-        <div className="flex flex-col sm:flex-row gap-6 p-6">
-            <FilterSidebar categories={categories} colors={colors} sizes={sizes} collections={collections} />
-            <div className="flex-1">
-                <AdvancedSearchBar />
-                {params.search! && <p className="text-sm text-gray-500 mt-2">Search results for {params.search as string}</p>}
-                <SortDropdown currentSort={params.sort!} />
-                <ProductList product={products} title={params.category! ? ` "${params.category!}"` : "All Products"} />
-            </div>
-        </div>
-    );
+    case "trending":
+      productsQuery = productsQuery.sort({
+        averageRating: -1,
+        sold: -1,
+      });
+      break;
+
+    case "price_high":
+      productsQuery = productsQuery.sort({ price: -1 });
+      break;
+
+    case "price_low":
+      productsQuery = productsQuery.sort({ price: 1 });
+      break;
+
+    default:
+      productsQuery = productsQuery.sort({
+        createdAt: -1,
+      });
+  }
+
+  // Run all database queries in parallel
+  const [
+    shoppingProducts,
+    categories,
+    colors,
+    sizes,
+    collections,
+  ] = await Promise.all([
+    productsQuery.exec(),
+    Product.distinct("category"),
+    Product.distinct("variants.color"),
+    Product.distinct("variants.size"),
+    Product.distinct("collections"),
+  ]);
+
+  const products = JSON.parse(
+    JSON.stringify(shoppingProducts)
+  );
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-6 p-6">
+      <FilterSidebar
+        categories={categories}
+        colors={colors}
+        sizes={sizes}
+        collections={collections}
+      />
+
+      <div className="flex-1">
+        <AdvancedSearchBar />
+
+        {params.search && (
+          <p className="mt-2 text-sm text-gray-500">
+            Search results for &quot;{params.search}&quot;
+          </p>
+        )}
+
+        <SortDropdown currentSort={params.sort ?? ""} />
+
+        <ProductList
+          product={products}
+          title={
+            params.category
+              ? `${params.category}`
+              : "All Products"
+          }
+        />
+      </div>
+    </div>
+  );
 }
