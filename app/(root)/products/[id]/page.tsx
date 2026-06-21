@@ -1,6 +1,6 @@
 
 
-import { Product } from '@/schema/schema';
+import { Product } from '@/schema/ProductSchema';
 
 import React from 'react';
 import { IProduct } from '@/types';

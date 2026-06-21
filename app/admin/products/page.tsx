@@ -1,6 +1,6 @@
 
 import AdminProductsPage from '@/components/admin/AdminProductsPage ';
-import { Product } from '@/schema/schema';
+import { Product } from '@/schema/ProductSchema';
 import { IProduct } from '@/types';
 
 const Page = async () => {

@@ -1,62 +1,6 @@
-import { IAddress, ICart, ICartItem, INotification, IOrder, IOrderItem, IProduct, IReview, IReviewReply } from "@/types";
+import { IAddress, ICart, ICartItem, INotification, IOrder, IOrderItem, IReview, IReviewReply } from "@/types";
 import mongoose, { Schema } from "mongoose";
 
-const UserSchema = new mongoose.Schema({
-  clerkId: { type: String, required: true, unique: true },
-  username: { type: String },
-  email: { type: String },
-  role: { type: String, enum: ["user", "admin"], default: "user" },
-  lastActivity: { type: Date, default: Date.now },
-}, {
-  timestamps: true
-});
-
-const ProductSchema: Schema = new Schema<IProduct>(
-  {
-    name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, unique: true },
-    description: { type: String, required: true },
-
-    sku: { type: String, required: true, unique: true },
-    brand: { type: String },
-    category: { type: String, required: true },
-
-    images: { type: [String], required: true },
-    thumbnail: { type: String, required: true },
-
-    price: { type: Number, required: true },
-    discountPrice: { type: Number },
-
-
-    stock: { type: Number, default: 0 },
-    sold: { type: Number, default: 0 },
-
-    variants: [
-      {
-        color: String,
-        size: String,
-        stock: Number,
-        reservedStock: {
-          type: Number,
-          default: 0
-        }
-      },
-    ],
-
-    tags: [String],
-    collections: [String],
-
-    averageRating: { type: Number, default: 0 },
-    totalReviews: { type: Number, default: 0 },
-
-    isFeatured: { type: Boolean, default: false },
-    isPublished: { type: Boolean, default: true },
-
-    metaTitle: String,
-    metaDescription: String,
-  },
-  { timestamps: true }
-);
 
 const CartItemSchema = new Schema<ICartItem>(
   {
@@ -253,5 +197,3 @@ export const Notification =
 export const Review = mongoose.models.Review || mongoose.model("Review", ReviewSchema);
 export const Order = mongoose.models.Order || mongoose.model("Order", OrderSchema);
 export const Cart = mongoose.models.Cart || mongoose.model("Cart", CartSchema);
-export const User = mongoose.models.User || mongoose.model("User", UserSchema);
-export const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);

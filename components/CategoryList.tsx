@@ -1,4 +1,4 @@
-import { Product } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
 import CategoryCard from "./CategoryCard";
 import { IProduct } from "@/types";
 

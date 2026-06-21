@@ -5,7 +5,7 @@ import ProductDetail from "@/components/ProductDetails";
 import ProductList from "@/components/ProductList";
 import PromoTicker from "@/components/Promo";
 import ReviewSection from "@/components/ReviewSection";
-import { Product } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
 import { IProduct } from "@/types";
 
 

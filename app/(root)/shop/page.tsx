@@ -3,7 +3,7 @@ import ProductList from "@/components/ProductList";
 import AdvancedSearchBar from "@/components/SearchBar";
 import SortDropdown from "@/components/SortBy";
 import connectDB from "@/lib/mongodb";
-import { Product } from "@/schema/schema";
+import { Product } from "@/schema/ProductSchema";
 import { IProduct } from "@/types";
 import { FilterQuery } from "mongoose";
 
