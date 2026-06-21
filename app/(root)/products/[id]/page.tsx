@@ -10,8 +10,9 @@ import BreadCrumb from '@/components/BreadCrumb';
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   await connectDB();
   const { id } = await params;
+const product = await Product.findOne({ _id: id }).lean<IProduct>();
 
-  const product = await Product.findById(id).lean<IProduct>();
+console.log(product);
 
   const productData = product ? JSON.parse(JSON.stringify(product)) : null;
 
