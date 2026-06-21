@@ -1,5 +1,5 @@
 // app/api/user/me/route.ts
-import { User } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 

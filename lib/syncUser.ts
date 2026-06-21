@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import connectDB from "./mongodb";
-import { User } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
 
 export async function syncUser(clerkUserId: string) {
     await connectDB();

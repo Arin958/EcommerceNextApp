@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
-import { User } from '@/schema/schema';
+import { User } from '@/schema/UserSchema';
 
 export async function GET() {
   try {

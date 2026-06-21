@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from "@/lib/mongodb";
 import { Review } from '@/schema/schema';
 import { auth } from '@clerk/nextjs/server';
-import { User } from '@/schema/schema';
+import { User } from '@/schema/UserSchema';
 
 export async function DELETE(
   request: NextRequest, 

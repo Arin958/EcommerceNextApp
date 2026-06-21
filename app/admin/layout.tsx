@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import connectDB from "@/lib/mongodb";
-import { User } from "@/schema/schema";
+import { User } from "@/schema/UserSchema";
 import { Sidebar } from "@/components/admin/AdminSidebar";
 
 

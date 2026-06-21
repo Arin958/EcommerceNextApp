@@ -1,15 +1,10 @@
 
-
-
-
-
-
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import MergeCartOnLogin from '@/components/MergeCart';
 import PayPalProvider from '@/components/PayPalProvider';
 import connectDB from '@/lib/mongodb';
-import { User } from '@/schema/schema';
+import { User } from '@/schema/UserSchema';
 
 import { auth } from '@clerk/nextjs/server';
 
