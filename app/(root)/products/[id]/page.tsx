@@ -1,6 +1,6 @@
 
 
-import { Product } from '@/schema/ProductSchema';
+import { Product } from '@/schema/schema';
 import { IProduct } from '@/types';
 import ProductDetail from '@/components/ProductDetails';
 import connectDB from '@/lib/mongodb';
@@ -10,28 +10,29 @@ import BreadCrumb from '@/components/BreadCrumb';
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   await connectDB();
   const { id } = await params;
-const product = await Product.findOne({ _id: id }).lean<IProduct>();
+  console.log(id)
+const product = await Product.findById(id).lean<IProduct>();
 
-console.log(product);
+  console.log(product);
 
   const productData = product ? JSON.parse(JSON.stringify(product)) : null;
 
   const similarProduct = await Product.find({
-  category: product?.category,
-  _id: { $ne: product?._id }
-})
-  .limit(4) // optional but recommended
-  .lean<IProduct[]>();
+    category: product?.category,
+    _id: { $ne: product?._id }
+  })
+    .limit(4) // optional but recommended
+    .lean<IProduct[]>();
   const similarProductData = similarProduct ? JSON.parse(JSON.stringify(similarProduct)) : null
-  console.log(similarProduct,"similarProduct")
+  console.log(similarProduct, "similarProduct")
 
-  
+
   if (!product) return <div>Product not found</div>;
 
   return <>
-  <BreadCrumb product={productData} />
-  <ProductDetail product={productData} />;
-  <ProductList product={similarProductData} title="Similar Products" />
+    <BreadCrumb product={productData} />
+    <ProductDetail product={productData} />;
+    <ProductList product={similarProductData} title="Similar Products" />
   </>
 };
 
